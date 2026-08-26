@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clarify · Skill Reference</title>
+<meta name="description" content="Five phases, a question budget that is often zero, and a lock that names every default: how the Clarify Agent Skill turns a subjective request into an instruction both sides would agree to.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Clarify · Skill Reference">
+<meta property="og:description" content="A question is a cost. Ask only what the context cannot answer.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%8D%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+
+<style>
+:root{
+  --ground:#EDEAE4;
+  --surface:#F6F4EF;
+  --surface-2:#E1DDD4;
+  --ink:#1B1A17;
+  --muted:#635F57;
+  --faint:#918C82;
+  --line:rgba(27,26,23,.16);
+  --line-soft:rgba(27,26,23,.08);
+  --ask:#8A4B12;
+  --ask-bg:rgba(138,75,18,.10);
+  --lock:#1D5E4A;
+  --lock-bg:rgba(29,94,74,.10);
+  --warn:#8A2F2F;
+  --warn-bg:rgba(138,47,47,.11);
+  --shadow:0 1px 0 rgba(27,26,23,.06);
+
+  --f-display:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#14130F; --surface:#1C1B17; --surface-2:#26251F;
+    --ink:#E4E0D6; --muted:#9B958A; --faint:#75705F;
+    --line:rgba(228,224,214,.17); --line-soft:rgba(228,224,214,.08);
+    --ask:#E0A165; --ask-bg:rgba(224,161,101,.13);
+    --lock:#5FB394; --lock-bg:rgba(95,179,148,.13);
+    --warn:#DE7B6F; --warn-bg:rgba(222,123,111,.13);
+    --shadow:0 1px 0 rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#14130F; --surface:#1C1B17; --surface-2:#26251F;
+  --ink:#E4E0D6; --muted:#9B958A; --faint:#75705F;
+  --line:rgba(228,224,214,.17); --line-soft:rgba(228,224,214,.08);
+  --ask:#E0A165; --ask-bg:rgba(224,161,101,.13);
+  --lock:#5FB394; --lock-bg:rgba(95,179,148,.13);
+  --warn:#DE7B6F; --warn-bg:rgba(222,123,111,.13);
+  --shadow:0 1px 0 rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px 96px}
+
+.mast{padding:56px 0 30px;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ask);margin:0 0 14px}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(38px,6.4vw,72px);line-height:.98;letter-spacing:-.025em;margin:0;text-wrap:balance}
+h1 .sub{display:block;font-size:clamp(15px,2vw,20px);font-weight:600;letter-spacing:.01em;color:var(--muted);margin-top:16px;line-height:1.5}
+.lede{max-width:66ch;color:var(--muted);margin:24px 0 0;font-size:15.5px}
+.facts{display:flex;flex-wrap:wrap;gap:0;margin:30px 0 0;border-top:1px solid var(--line-soft)}
+.fact{flex:1 1 150px;padding:16px 20px 14px;border-right:1px solid var(--line-soft)}
+.fact:last-child{border-right:0}
+.fact b{display:block;font-family:var(--f-display);font-weight:700;font-size:26px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.fact span{display:block;font-size:11.5px;color:var(--faint);font-family:var(--f-mono);letter-spacing:.06em;text-transform:uppercase}
+
+nav.jump{position:sticky;top:0;z-index:20;background:var(--ground);border-bottom:1px solid var(--line);margin-bottom:8px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
+nav.jump a{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:13px 12px;white-space:nowrap;border-bottom:2px solid transparent}
+nav.jump a:hover{color:var(--ink);border-bottom-color:var(--ask)}
+nav.jump a:focus-visible{outline:2px solid var(--ask);outline-offset:-3px}
+
+section{padding:52px 0 8px;border-top:1px solid var(--line-soft);scroll-margin-top:56px}
+section:first-of-type{border-top:0}
+h2{font-family:var(--f-display);font-weight:700;font-size:26px;letter-spacing:-.015em;margin:0 0 6px;display:flex;align-items:baseline;gap:12px;text-wrap:balance}
+h2 .num{font-family:var(--f-mono);font-size:12px;font-weight:600;color:var(--ask);letter-spacing:.1em}
+h3{font-family:var(--f-display);font-weight:700;font-size:16px;margin:30px 0 8px;letter-spacing:-.01em}
+p{margin:12px 0;max-width:74ch}
+.dek{color:var(--muted);margin:0 0 22px;max-width:72ch}
+strong{font-weight:700}
+em{font-style:italic;color:var(--muted)}
+code{font-family:var(--f-mono);font-size:.88em;background:var(--surface-2);padding:1px 5px;border-radius:3px}
+a{color:var(--ask)}
+
+.rail{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:26px 0 8px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:14px 14px 16px;box-shadow:var(--shadow)}
+.step .k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;color:var(--ask);text-transform:uppercase}
+.step .t{font-family:var(--f-display);font-weight:700;font-size:15px;margin:6px 0 6px}
+.step .d{font-size:13px;color:var(--muted);line-height:1.6}
+@media (max-width:900px){.rail{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.rail{grid-template-columns:1fr}}
+
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+.scroll{overflow-x:auto}
+th{text-align:left;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600;padding:8px 12px;border-bottom:1px solid var(--line)}
+td{padding:10px 12px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+td:first-child{font-weight:600;white-space:nowrap}
+tbody tr:hover{background:var(--surface)}
+
+.callout{border-left:3px solid var(--ask);background:var(--ask-bg);padding:14px 18px;margin:22px 0;border-radius:0 4px 4px 0}
+.callout.lock{border-left-color:var(--lock);background:var(--lock-bg)}
+.callout.warn{border-left-color:var(--warn);background:var(--warn-bg)}
+.callout p{margin:6px 0}
+.callout .lbl{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:4px}
+
+pre{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:16px 18px;overflow-x:auto;font-family:var(--f-mono);font-size:12.6px;line-height:1.7;margin:18px 0}
+pre code{background:none;padding:0;font-size:inherit}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media (max-width:820px){.cols{grid-template-columns:1fr}}
+ul{margin:12px 0;padding-left:20px;max-width:74ch}
+li{margin:6px 0}
+li::marker{color:var(--faint)}
+
+.budget td:first-child{white-space:normal}
+.budget .zero{color:var(--lock);font-weight:700}
+
+footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0 0;color:var(--faint);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">Agent Skill · self-contained</p>
+  <h1>Clarify<span class="sub">Turn "make it nice" into one instruction both sides would agree to — using as few questions as the context allows.</span></h1>
+  <p class="lede">A question is a cost. Someone who says <em>make it nice</em> is delegating; answering a ten-minute reversible change with three questions bills them for the agent's uncertainty. Clarify spends its effort on reading context, and its questions only on what reading cannot settle. <strong>Clear means agreeable, not merely measurable</strong> — the run ends when the person who asked can read the instruction and say <em>yes, that is what I meant</em>.</p>
+  <div class="facts">
+    <div class="fact"><b>5</b><span>phases</span></div>
+    <div class="fact"><b>8</b><span>evaluative words</span></div>
+    <div class="fact"><b>0–3</b><span>questions per round</span></div>
+    <div class="fact"><b>2</b><span>rounds, hard maximum</span></div>
+  </div>
+</header>
+
+<nav class="jump">
+  <a href="#gate">The gate</a>
+  <a href="#phases">Five phases</a>
+  <a href="#budget">Question budget</a>
+  <a href="#words">Translation</a>
+  <a href="#asking">Asking well</a>
+  <a href="#lock">The lock</a>
+  <a href="#traps">Traps</a>
+  <a href="#install">Install</a>
+</nav>
+
+<section id="gate">
+  <h2><span class="num">01</span> The gate — most requests do not need this</h2>
+  <p class="dek">The first thing the skill does is try not to run.</p>
+  <p>Two sentences have to be writable without inventing anything: <strong>what the person is actually after</strong>, in their own words, and <strong>who looks at what, and decides it is done.</strong> If both write themselves, Clarify does not fire — the request is executed as given. Only one of them missing tells you which half the run is for: an intent with no condition needs grounding, a condition with no intent needs one question.</p>
+  <div class="callout">
+    <span class="lbl">Both halves, or neither</span>
+    <p>A measurable criterion serving the wrong intent is precise and useless. A shared intent with no checkable condition is a mood two people happen to share. <strong>Agreement is the test; measurability is what makes agreeing to it safe.</strong></p>
+  </div>
+  <div class="callout warn">
+    <span class="lbl">Symmetry</span>
+    <p>Firing on an already-clear request is the same defect as executing a vague one. Both spend the requester's attention on the agent's uncertainty.</p>
+  </div>
+  <p>A shut gate still says so, in one line — <code>clarify: gate shut — &lt;the done-sentence&gt;</code>. That line is the entire output. A skill that declines silently leaves no evidence it declined, and no way to notice it has stopped earning its place.</p>
+  <h3>Six classes of vagueness</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Class</th><th>Shape</th><th>Example</th><th>What is actually missing</th></tr></thead>
+    <tbody>
+      <tr><td>Evaluative</td><td>judgement word, no condition</td><td>"make it nice"</td><td>the axis of judgement and its bar</td></tr>
+      <tr><td>Unbounded</td><td>clear verb, no edge</td><td>"clean up around here"</td><td>scope, and what must not change</td></tr>
+      <tr><td>Delegated</td><td>explicit hand-off</td><td>"whatever you think"</td><td>nothing — a default <em>is</em> the answer</td></tr>
+      <tr><td>Rejection</td><td>negative, unnamed delta</td><td>"not quite it"</td><td>which property of the last artifact is wrong</td></tr>
+      <tr><td>Imported</td><td>a word from elsewhere</td><td>"modern", "properly"</td><td>the referent — modern compared to what</td></tr>
+      <tr><td>Quantified-sounding</td><td>number-shaped, unmeasured</td><td>"make it faster"</td><td>the metric, the baseline, the target</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><strong>False positives keep the gate shut:</strong> the vague word qualifies an already-specified change ("make the header spacing nice" fixes target, property and direction — only the amount is open) · the repo already answers it in a lint rule, a token set, or a sibling implementation · the work is small and reversible enough that showing an artifact is cheaper than describing one · the person has decided and is asking for execution.</p>
+</section>
+
+<section id="phases">
+  <h2><span class="num">02</span> The five-phase workflow</h2>
+  <p class="dek">GATE → GROUND → RESIDUE → ASK → LOCK. Grounding always precedes asking.</p>
+  <div class="rail">
+    <div class="step"><div class="k">01 · gate</div><div class="t">Does this need clarifying</div><div class="d">Neither the intent sentence nor the done-sentence writes itself. Otherwise: stop, and execute.</div></div>
+    <div class="step"><div class="k">02 · ground</div><div class="t">Fill from context</div><div class="d">Artifact → neighbour → declared convention → this conversation → memory. Each filled item names its source.</div></div>
+    <div class="step"><div class="k">03 · residue</div><div class="t">What genuinely remains</div><div class="d">Only where different answers change the deliverable <em>and</em> no default is defensible.</div></div>
+    <div class="step"><div class="k">04 · ask</div><div class="t">Closed choices, within budget</div><div class="d">Recommended option first, each option naming a different artifact.</div></div>
+    <div class="step"><div class="k">05 · lock</div><div class="t">One instruction both sides agree to</div><div class="d">Intent in their words, target, done-state, acceptance check, exclusion, defaults taken.</div></div>
+  </div>
+  <h3>Grounding: what each source can settle</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>#</th><th>Source</th><th>Settles</th><th>Cannot settle</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>The artifact itself</td><td>which defects actually exist, and their size</td><td>preference among defensible options</td></tr>
+      <tr><td>2</td><td>The neighbour</td><td>house style, naming, density, structure</td><td>anything the neighbour is itself wrong about</td></tr>
+      <tr><td>3</td><td>Declared convention</td><td>the bar the repo already holds itself to</td><td>a bar the repo has never set</td></tr>
+      <tr><td>4</td><td>This conversation</td><td>what was already ruled out</td><td>anything not yet discussed</td></tr>
+      <tr><td>5</td><td>Durable memory</td><td>standing preferences across sessions</td><td>whether the preference still holds</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>An item answerable at levels 1–3 is <strong>never</strong> a question. Asking it announces that the context was not read.</p>
+</section>
+
+<section id="budget">
+  <h2><span class="num">03</span> The question budget</h2>
+  <p class="dek">The count comes from reversibility and blast radius — never from how vague the request felt.</p>
+  <div class="scroll">
+  <table class="budget">
+    <thead><tr><th>Blast radius \ Reversibility</th><th>Reversible</th><th>Irreversible / outward-facing</th></tr></thead>
+    <tbody>
+      <tr><td>Small — one file, a few lines, a local look</td><td><span class="zero">0 questions.</span> Take the default, state the short lock (one line), let the artifact be the answer</td><td>1 question — confirmation only</td></tr>
+      <tr><td>Large — structure, many files, expensive to redo</td><td>1 question — direction only</td><td>up to 3 questions, then the lock waits for approval</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="callout">
+    <span class="lbl">Rounds</span>
+    <p>Round 1 asks up to the budget. Round 2 asks at most one question, and only where an answer opened a genuinely new fork. <strong>There is no round 3</strong> — a second vague answer is itself a decision: it means <em>you choose</em>. Take the default, name it in one line, proceed.</p>
+  </div>
+  <p>A budget of zero is a real answer, not a shortcut. And an open question is never a stop: everything it does not gate keeps moving while it is open.</p>
+</section>
+
+<section id="words">
+  <h2><span class="num">04</span> Translating the evaluative word</h2>
+  <p class="dek">Eight evaluative words, and the axis each one is actually pointing at. The table says which axis to look along — never what to conclude. Read the artifact first.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Word</th><th>Axis it actually names</th><th>Default filling</th></tr></thead>
+    <tbody>
+      <tr><td>nice / clean</td><td>agreement with what is already there</td><td>the neighbouring code or screen is the spec</td></tr>
+      <tr><td>modern / slick</td><td>spacing, hierarchy, restraint of colour</td><td>existing tokens; none → two candidates</td></tr>
+      <tr><td>properly / solid</td><td>the verification that is missing</td><td>match the repo's existing bar</td></tr>
+      <tr><td>fast / snappy</td><td>a number: p95, bundle size, cold start</td><td>measure now, target stated relative to now</td></tr>
+      <tr><td>easy to use</td><td>steps and hesitation on one named task</td><td>pick the single primary path, fix that</td></tr>
+      <tr><td>whatever / up to you</td><td>explicit delegation</td><td>shortest correct implementation, shown afterwards</td></tr>
+      <tr><td>not quite it</td><td>an unnamed delta in the last artifact</td><td>inspect it, propose three deltas, ask once</td></tr>
+      <tr><td>refactor this</td><td>which property improves, and the bound</td><td>one property, one module, behaviour identical</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The rows are keyed on the axis, not on the vocabulary, so a request in another language lands on the same row — the skill's reference carries the mapping for the one language it is most often asked in, and the two traps that come with it: a dropped subject leaves the target itself as residue, and its strongest delegation ("yoshinani") is stronger than "whatever you think", not weaker.</p>
+  <p>Grounding is finished for an item when it reads as an observable state rather than an adjective: <em>card padding matches the list view at 16px</em>, not <em>the spacing is tidy</em>. If the sentence still needs an adjective to carry its meaning, the residue is real and the question is earned.</p>
+</section>
+
+<section id="asking">
+  <h2><span class="num">05</span> Asking well</h2>
+  <p class="dek">Every question is a closed choice whose options differ in the artifact, not in the adjective.</p>
+  <div class="cols">
+    <div>
+      <h3>The shape</h3>
+<pre><code>Card spacing (recommended: A)
+  A. Match the list view at 16px
+     — consistent with what exists, nothing distinctive
+  B. Widen to 24px and let the card lead
+     — items per screen drops from 6 to 4</code></pre>
+      <p>Recommended option first and viable on its own; two to four options; one line of consequence each — what the person gets, what they give up.</p>
+    </div>
+    <div>
+      <h3>Bad shapes</h3>
+      <div class="scroll">
+      <table>
+        <thead><tr><th>Bad</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>"What would you like to do?"</td><td>hands the work back</td></tr>
+          <tr><td>"What matters most to you?"</td><td>asks for a value, not a decision</td></tr>
+          <tr><td>A/B/C/D/E</td><td>a menu is a deferral</td></tr>
+          <tr><td>"Should I write tests?"</td><td>the repo already answered</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+  <div class="callout">
+    <span class="lbl">Show instead of ask</span>
+    <p>Where the variable is taste and the second candidate is cheap to build, <strong>build both</strong>. A rendered pair asks the question better than any sentence, and it fails safe: if neither lands, the reply names the delta and grounding restarts with real evidence. Not for schema shape, migrations, or anything expensive to build twice.</p>
+  </div>
+</section>
+
+<section id="lock">
+  <h2><span class="num">06</span> The lock — the artifact this skill produces</h2>
+  <p class="dek">Fewer questions, nothing hidden: every value taken without asking appears here with its source.</p>
+<pre><code>## Locked instruction
+- Intent:         &lt;one sentence, in the requester's own words&gt;
+- Target:         &lt;file / screen / range — where the change stops&gt;
+- Done state:     &lt;observable state after the change, no adjectives&gt;
+- Acceptance:     &lt;who runs or looks at what, and what result settles it&gt;
+- Not doing:      &lt;at least one — the tempting adjacent thing&gt;
+- Defaults taken: &lt;item — value — source&gt;
+- Open:           &lt;item, and why it does not block&gt; | none</code></pre>
+  <p>The field set is the contract; the labels are not. The block is rendered in whatever language the run is speaking — the same seven fields, in the same order.</p>
+  <h3>Short form — the zero-question path</h3>
+  <p>When the budget was zero and nothing is open, the full block costs more than the change it governs. The same fields collapse into one line, every slot still present:</p>
+<pre><code>lock: &lt;intent&gt; → &lt;done state&gt;; checked by &lt;acceptance&gt;;
+      not touching &lt;exclusion&gt;; default &lt;item = value, source&gt;</code></pre>
+  <p>Anything open, any question asked, or any irreversible work goes back to the full block. The one slot a squeezed format drops first is <strong>not touching</strong> — and that is the one holding the scope still.</p>
+  <ul>
+    <li><strong>Intent</strong> is the sentence the person would sign — their vocabulary, not the agent's. It is the field agreement actually happens on; every other field exists to make that agreement checkable. A guessed intent stated plainly can be corrected in one word.</li>
+    <li><strong>Done state</strong> must survive the adjective test: delete every evaluative word and it still says what will be true.</li>
+    <li><strong>Acceptance</strong> is a command, a comparison against a named reference, or a number against a baseline. <em>"You'll see it" is not an acceptance condition.</em></li>
+    <li><strong>Not doing</strong> is never empty — the exclusion is the cheapest scope control available.</li>
+  </ul>
+  <h3>How agreement is taken</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Work</th><th>How agreement is taken</th></tr></thead>
+    <tbody>
+      <tr><td>Reversible, small</td><td>State the lock, proceed on non-objection — the artifact arrives before an objection would have</td></tr>
+      <tr><td>Reversible, large</td><td>State the lock, start on the part nobody could object to, hold the contested part one beat</td></tr>
+      <tr><td>Irreversible / outward-facing</td><td>Explicit yes. Non-objection is not assent when undoing is expensive</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>A correction to the intent line is the cheapest possible outcome, not a failed run: re-ground from the corrected sentence, and leave the fields nobody disputed alone.</p>
+  <div class="callout lock">
+    <span class="lbl">After the lock</span>
+    <p>The lock is a ceiling, not a floor. A further improvement found while working is offered in one line and left to the person — absorbing it silently converts "make it nice" into an unrequested rewrite, which is the original failure with better intentions.</p>
+  </div>
+</section>
+
+<section id="traps">
+  <h2><span class="num">07</span> Traps</h2>
+  <p class="dek">Over-clarifying is the dominant failure, not under-clarifying.</p>
+  <ul>
+    <li><strong>Interrogating a delegation.</strong> "Whatever you think" is an answer. The response is the shortest correct artifact plus a line saying what was assumed.</li>
+    <li><strong>Clarifying the whole sentence when one word is vague.</strong> The specific parts of a request are load-bearing; re-asking them reads as not having listened.</li>
+    <li><strong>Dictionary translation without looking.</strong> "Modern" mapped to a fixed recipe produces exactly the generic default the word was complaining about.</li>
+    <li><strong>Options that differ only in adjective.</strong> If the reader cannot picture two different artifacts, the question is unasked.</li>
+    <li><strong>Budget inflation from discomfort.</strong> Vagueness felt is not blast radius.</li>
+    <li><strong>Clarifying instead of working.</strong> A perfect instruction that arrives after the person could have had the artifact is a failure of the method, not a success.</li>
+  </ul>
+</section>
+
+<section id="install">
+  <h2><span class="num">08</span> Install</h2>
+  <p class="dek">The skill directory is what gets linked; the README and the test battery stay behind.</p>
+<pre><code>make link                      # every agent CLI installed here
+make link AGENT=codex          # just one — claude | codex | agy
+make link PROJECT=/path/repo   # that repository, not the home directories
+make status                    # where is it linked?
+make unlink                    # remove only the links pointing at this repo
+make check                     # references, counts and identifiers agree
+make test                      # the fixture battery over check and link</code></pre>
+  <p>Nothing at the destination is ever overwritten: a real directory, or a symlink into another checkout, is refused and left alone. A CLI whose own directory does not exist is skipped rather than created.</p>
+  <p>Invoke it as <code>clarify</code>, or <code>/clarify</code> in a slash-command harness — or let it trigger on its own whenever a request arrives with no achievement condition.</p>
+</section>
+
+<footer>
+  <span>clarify — a standalone agent skill</span>
+  <span>The clarified instruction is the artifact. If it needed three questions, it needed one.</span>
+</footer>
+
+</div>
+</body>
+</html>
