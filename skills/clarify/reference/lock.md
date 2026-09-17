@@ -12,8 +12,8 @@ Read at `LOCK`.
 - Done state: <observable state after the change, no adjectives>
 - Acceptance: <who runs or looks at what, and what result settles it>
 - Not doing: <at least one — the tempting adjacent thing>
-- Defaults taken: <item — value — source (artifact / neighbour / convention / prior turn)>
-- Open: <item, and why it does not block> | none
+- Defaults taken: <item — value — basis (artifact / neighbour / convention / prior turn / delegated discretion)>
+- Open: <unresolved item and the work it gates> | none
 ```
 
 ## Short form
@@ -54,25 +54,26 @@ in the same order. **Never drop a field because its label translates awkwardly.*
   and the thing that was obviously out of scope is exactly what gets added otherwise.
 - **Defaults taken** — every value taken without asking, with its source. This is the price
   of a small question budget: fewer questions, nothing hidden.
-- **Open** — only items that do not gate the work. Anything that gates it went to `ASK`.
+- **Open** — name unresolved items and the work they gate. A completed lock has no blocking items; an exhausted question budget does not authorize dependent work.
 
 ## Agreement
 
 The lock is finished when the other person could disagree with it cheaply — that is the
-whole point of writing it down. How assent is taken depends on what it would cost to be wrong:
+whole point of writing it down. Whether approval is required depends on the action, not
+on silence inferred before a person could respond:
 
-| Work | How agreement is taken |
+| Work | Approval requirement |
 |---|---|
-| Reversible, small | State the lock, proceed on non-objection. The artifact arrives before an objection would have. |
-| Reversible, large | State the lock, start on the part nobody could object to, hold the contested part one beat. |
-| Irreversible / outward-facing | Explicit yes. Non-objection is not assent when undoing is expensive. |
+| Reversible, small | State the lock and proceed without requiring approval. Do not record assent that was not observed. |
+| Reversible, large | State the lock; proceed only on settled work. A pause or same-turn execution supplies no approval. |
+| Irreversible / outward-facing | Explicit approval of the resolved action, even when publication is reversible. Reuse an existing approval only if it covers that action. |
 
 **A correction to Intent is the cheapest possible outcome, not a failure of the run.** Re-ground
 from the corrected sentence and re-lock; do not reopen the fields that were never in dispute.
 
 ## After the lock
 
-- Irreversible or outward-facing work waits here for approval. Everything else proceeds.
+- Irreversible or outward-facing work waits for approval of the resolved action. Other work proceeds only within the settled lock; blocking inputs stay unresolved.
 - The lock is a ceiling. A further improvement found while working is offered in one
   line and left to the person — absorbing it silently converts "make it nice" into an
   unrequested rewrite, which is the original failure with better intentions.

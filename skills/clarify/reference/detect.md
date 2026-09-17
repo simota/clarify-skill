@@ -12,8 +12,8 @@ Two sentences have to be writable about the request, without inventing anything:
 
 - Both write themselves → **Clarify does not fire.** Execute the request.
 - Neither does → the gate opens on the full workflow.
-- Only one does → that tells you which half the run is for. An intent with no condition
-  needs grounding; a condition with no intent needs one question, and only one.
+- Only one does → ground that half; ask only the material user decision still missing.
+  A shut gate does not waive the executor's authorization for an external or destructive action.
 
 Firing on a clear request costs the same as executing a vague one. Both spend the
 requester's attention on your uncertainty.
@@ -26,16 +26,16 @@ Each class has a different residue, so name it before grounding.
 |---|---|---|---|
 | **Evaluative** | judgement word, no condition | "make it nice" | the axis of judgement and its bar |
 | **Unbounded** | clear verb, no edge | "clean up around here" | scope, and what must not change |
-| **Delegated** | explicit hand-off | "whatever you think" | nothing — a default is the answer |
+| **Delegated** | explicit hand-off | "whatever you think" | only choices outside the delegated discretion, unknown facts or approval |
 | **Rejection** | negative, unnamed delta | "not quite it" | which property of the last artifact is wrong |
 | **Imported** | a word from elsewhere | "make it modern", "do it properly" | the referent — modern compared to what |
 | **Quantified-sounding** | number-shaped, unmeasured | "make it faster" | the metric, the baseline, the target |
 
 ## False positives — the gate stays shut
 
-- The vague word qualifies an already-specified change: "make the header spacing nice" fixes target, property, and intent. Only the amount is open.
-- The repo answers it. A lint rule, a token set, an existing sibling implementation, or a line in the repo's agent-instructions file is an achievement condition already written down.
-- The work is reversible and small enough that showing an artifact is cheaper than describing one.
+- The vague word qualifies an already-specified outcome: "set the header padding to 16px so it looks nice". "Make the header spacing nice" fixes the target and property, not necessarily the amount or condition. Keep only that residue.
+- Applicable context selects the desired state. A token scale or a sibling's mere existence is not a choice among its values; check authority and conflicts in `reference/grounding.md`.
+- A small reversible draft is safely delegated and cheaper to show, with no missing user-only fact or authority. Size alone does not settle ambiguity.
 - The person has decided and is asking for execution. Clarifying then is a refusal in polite clothing.
 
 ## Signals that raise the class, not the question count

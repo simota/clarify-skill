@@ -5,12 +5,21 @@ Read at `ASK`.
 
 ## Shape
 
-Every question is a **closed choice**:
+Use a **closed choice** for preferences whose plausible options are known:
 
-- the **recommended option first**, marked as such, and viable on its own
-- 2–4 options, each naming **the difference in the artifact**
-- one line of consequence per option — what the person gets, what they give up
-- never an "or something else?" tail as a substitute for thinking of the third option
+- 2–4 viable options naming the difference in the artifact, with consequences
+- recommend first only when applicable evidence favors it; otherwise stay neutral
+- do not use an "or something else?" tail to disguise an invented option space
+
+For a fact or referent whose options are not safely enumerable, ask one narrow field:
+"Which legal entity should appear?" or "What is the agreed publication date?"
+Do not replace these with fictional clients, dates or business policies. This is not an
+invitation to ask broad questions that hand the task back.
+
+A recommendation is advice, not an executable default or approval. If a default really
+settles the residue within delegated authority, no preference question is needed. When no
+option is favored, do not manufacture a recommendation to satisfy the format; cheapness
+alone favors an option only when cost is an agreed objective.
 
 ```
 Card spacing (recommended: A)
@@ -21,12 +30,12 @@ Card spacing (recommended: A)
 ## The one question worth more than the others
 
 A question that tests **intent alignment** buys more than any question that fills a parameter,
-because every parameter is downstream of it. Ask it as a statement to agree with, not as an
-open question:
+because every parameter is downstream of it. When plausible intents are grounded, offer their concrete consequences without
+claiming an unsupported recommendation:
 
 ```
-Taking the goal to be "pick one row from the list without hesitating" (recommended: A)
-  A. Go with that — spacing and line height change, colour stays as it is
+Two plausible goals from the current flow (no preference evidence):
+  A. Pick one row without hesitating — spacing and line height change, colour stays as it is
   B. Actually it is "fit more on screen" — the opposite: density up, spacing down
 ```
 
@@ -46,11 +55,13 @@ stated plainly is safer than a correct intent left unstated** — the first can 
 
 ## Rounds
 
-- **Round 1** — up to the budget (0–3). Below the budget is fine; over it never is.
-- **Round 2** — only when an answer opened a genuinely new fork. Maximum one question.
-- **No round 3.** A second vague answer is a decision: it means *you choose*. Take the
-  default, name it in one line, proceed. Re-asking after a delegation is the fastest
-  way to make the skill worse than not having it.
+- **Round 1** — only necessary decisions, up to 3. A budget is not a quota.
+- **Round 2** — at most one unresolved essential input or new material fork.
+- **No round 3.** A second vague reply settles a preference only when the person declines
+  to choose within delegated discretion and adds no unresolved constraint. Incomprehension,
+  a language barrier, dissatisfaction, uncertainty or a partial answer is not delegation.
+  Explain or re-ground what changed; hold still-unresolved dependent work. Never turn an
+  unanswered factual input or ungranted approval into a default.
 
 ## Show instead of ask
 
@@ -66,7 +77,8 @@ Does not apply to: schema shape, irreversible migrations, anything expensive to 
 The round ends at the lock, not at the last answer. State the intent line back once, in the
 person's own words, together with what will be true when it is done — that sentence is what
 they are agreeing to, and everything measurable in the lock exists to make agreeing to it safe.
-**Silence on a reversible change is assent; silence on an irreversible one is not.**
+**Cheap reversible work does not require approval. Same-turn execution is not observed
+assent; even observed silence is not approval for an irreversible or outward action.**
 
 ## While waiting
 

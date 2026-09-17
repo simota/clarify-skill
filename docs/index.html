@@ -156,7 +156,7 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
 <section id="gate">
   <h2><span class="num">01</span> The gate — most requests do not need this</h2>
   <p class="dek">The first thing the skill does is try not to run.</p>
-  <p>Two sentences have to be writable without inventing anything: <strong>what the person is actually after</strong>, in their own words, and <strong>who looks at what, and decides it is done.</strong> If both write themselves, Clarify does not fire — the request is executed as given. Only one of them missing tells you which half the run is for: an intent with no condition needs grounding, a condition with no intent needs one question.</p>
+  <p>Two sentences have to be writable without inventing anything: <strong>what the person is actually after</strong>, in their own words, and <strong>who looks at what, and decides it is done.</strong> If both write themselves, Clarify does not fire — the request is executed as given. Only one of them missing tells you which half the run is for: ground the missing half, then ask only the material user decision that remains.</p>
   <div class="callout">
     <span class="lbl">Both halves, or neither</span>
     <p>A measurable criterion serving the wrong intent is precise and useless. A shared intent with no checkable condition is a mood two people happen to share. <strong>Agreement is the test; measurability is what makes agreeing to it safe.</strong></p>
@@ -173,69 +173,69 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
     <tbody>
       <tr><td>Evaluative</td><td>judgement word, no condition</td><td>"make it nice"</td><td>the axis of judgement and its bar</td></tr>
       <tr><td>Unbounded</td><td>clear verb, no edge</td><td>"clean up around here"</td><td>scope, and what must not change</td></tr>
-      <tr><td>Delegated</td><td>explicit hand-off</td><td>"whatever you think"</td><td>nothing — a default <em>is</em> the answer</td></tr>
+      <tr><td>Delegated</td><td>explicit hand-off</td><td>"whatever you think"</td><td>only undelegated decisions, unknown facts or approval remain</td></tr>
       <tr><td>Rejection</td><td>negative, unnamed delta</td><td>"not quite it"</td><td>which property of the last artifact is wrong</td></tr>
       <tr><td>Imported</td><td>a word from elsewhere</td><td>"modern", "properly"</td><td>the referent — modern compared to what</td></tr>
       <tr><td>Quantified-sounding</td><td>number-shaped, unmeasured</td><td>"make it faster"</td><td>the metric, the baseline, the target</td></tr>
     </tbody>
   </table>
   </div>
-  <p><strong>False positives keep the gate shut:</strong> the vague word qualifies an already-specified change ("make the header spacing nice" fixes target, property and direction — only the amount is open) · the repo already answers it in a lint rule, a token set, or a sibling implementation · the work is small and reversible enough that showing an artifact is cheaper than describing one · the person has decided and is asking for execution.</p>
+  <p><strong>False positives keep the gate shut:</strong> the outcome is already specified ("set header padding to 16px so it looks nice") · applicable context selects the desired state without an unresolved conflict · a small reversible draft is safely delegated with no missing user-only facts. A token scale or one open parameter alone does not close the gate · the person has decided and is asking for execution.</p>
 </section>
 
 <section id="phases">
   <h2><span class="num">02</span> The five-phase workflow</h2>
   <p class="dek">GATE → GROUND → RESIDUE → ASK → LOCK. Grounding always precedes asking.</p>
   <div class="rail">
-    <div class="step"><div class="k">01 · gate</div><div class="t">Does this need clarifying</div><div class="d">Neither the intent sentence nor the done-sentence writes itself. Otherwise: stop, and execute.</div></div>
-    <div class="step"><div class="k">02 · ground</div><div class="t">Fill from context</div><div class="d">Artifact → neighbour → declared convention → this conversation → memory. Each filled item names its source.</div></div>
+    <div class="step"><div class="k">01 · gate</div><div class="t">Does this need clarifying</div><div class="d">Either sentence needs an unsupported material decision. Otherwise: stop, and execute.</div></div>
+    <div class="step"><div class="k">02 · ground</div><div class="t">Fill from context</div><div class="d">Baseline evidence, applicable constraints, current corrections and fallback preferences. Each filled item names its source.</div></div>
     <div class="step"><div class="k">03 · residue</div><div class="t">What genuinely remains</div><div class="d">Only where different answers change the deliverable <em>and</em> no default is defensible.</div></div>
-    <div class="step"><div class="k">04 · ask</div><div class="t">Closed choices, within budget</div><div class="d">Recommended option first, each option naming a different artifact.</div></div>
+    <div class="step"><div class="k">04 · ask</div><div class="t">Necessary decisions, within budget</div><div class="d">Real preference options or a narrow missing input; recommend only with evidence.</div></div>
     <div class="step"><div class="k">05 · lock</div><div class="t">One instruction both sides agree to</div><div class="d">Intent in their words, target, done-state, acceptance check, exclusion, defaults taken.</div></div>
   </div>
   <h3>Grounding: what each source can settle</h3>
   <div class="scroll">
   <table>
-    <thead><tr><th>#</th><th>Source</th><th>Settles</th><th>Cannot settle</th></tr></thead>
+    <thead><tr><th>Role</th><th>Source</th><th>Settles</th><th>Cannot settle</th></tr></thead>
     <tbody>
-      <tr><td>1</td><td>The artifact itself</td><td>which defects actually exist, and their size</td><td>preference among defensible options</td></tr>
-      <tr><td>2</td><td>The neighbour</td><td>house style, naming, density, structure</td><td>anything the neighbour is itself wrong about</td></tr>
-      <tr><td>3</td><td>Declared convention</td><td>the bar the repo already holds itself to</td><td>a bar the repo has never set</td></tr>
-      <tr><td>4</td><td>This conversation</td><td>what was already ruled out</td><td>anything not yet discussed</td></tr>
-      <tr><td>5</td><td>Durable memory</td><td>standing preferences across sessions</td><td>whether the preference still holds</td></tr>
+      <tr><td>Baseline</td><td>The artifact itself, when it exists</td><td>which defects actually exist, and their size</td><td>preference among defensible options</td></tr>
+      <tr><td>Comparison</td><td>The accepted neighbour</td><td>house style, naming, density, structure</td><td>anything the neighbour is itself wrong about</td></tr>
+      <tr><td>Constraint</td><td>Applicable declared convention</td><td>the bar the repo already holds itself to</td><td>a bar the repo has never set</td></tr>
+      <tr><td>Preference</td><td>Current request and conversation</td><td>what was already ruled out</td><td>anything not yet discussed</td></tr>
+      <tr><td>Fallback</td><td>Durable memory</td><td>standing preferences across sessions</td><td>whether the preference still holds</td></tr>
     </tbody>
   </table>
   </div>
-  <p>An item answerable at levels 1–3 is <strong>never</strong> a question. Asking it announces that the context was not read.</p>
+  <p>Reading order is not authority: an artifact establishes the baseline, not automatically the desired state. Applicable conventions supersede inconsistent examples; current corrections supersede older preferences. Conflicting applicable requirements remain residue. For new work use specifications and references, not a nonexistent artifact.</p>
 </section>
 
 <section id="budget">
   <h2><span class="num">03</span> The question budget</h2>
-  <p class="dek">The count comes from reversibility and blast radius — never from how vague the request felt.</p>
+  <p class="dek">The preference budget reflects reversibility and reach; it cannot erase a required user-only input.</p>
   <div class="scroll">
   <table class="budget">
     <thead><tr><th>Blast radius \ Reversibility</th><th>Reversible</th><th>Irreversible / outward-facing</th></tr></thead>
     <tbody>
-      <tr><td>Small — one file, a few lines, a local look</td><td><span class="zero">0 questions.</span> Take the default, state the short lock (one line), let the artifact be the answer</td><td>1 question — confirmation only</td></tr>
-      <tr><td>Large — structure, many files, expensive to redo</td><td>1 question — direction only</td><td>up to 3 questions, then the lock waits for approval</td></tr>
+      <tr><td>Small — one file, a few lines, a local look</td><td><span class="zero">0 when grounded or safely delegated.</span> Otherwise ask only the necessary material decision</td><td>Resolve missing inputs, then confirm the resolved action</td></tr>
+      <tr><td>Large — structure, many files, expensive to redo</td><td>0–1 preference question; required user-only inputs within the round limit</td><td>Necessary inputs within the round limit, then explicit approval</td></tr>
     </tbody>
   </table>
   </div>
   <div class="callout">
     <span class="lbl">Rounds</span>
-    <p>Round 1 asks up to the budget. Round 2 asks at most one question, and only where an answer opened a genuinely new fork. <strong>There is no round 3</strong> — a second vague answer is itself a decision: it means <em>you choose</em>. Take the default, name it in one line, proceed.</p>
+    <p>Round 1 asks at most three necessary questions; round 2 at most one unresolved essential input or new material fork. <strong>There is no round 3</strong>. Respect genuine delegation, not confusion or a partial answer. A cap leaves missing facts unresolved; it does not turn them into defaults. Approval of the resolved action is separate.</p>
   </div>
   <p>A budget of zero is a real answer, not a shortcut. And an open question is never a stop: everything it does not gate keeps moving while it is open.</p>
 </section>
 
 <section id="words">
   <h2><span class="num">04</span> Translating the evaluative word</h2>
-  <p class="dek">Eight evaluative words, and the axis each one is actually pointing at. The table says which axis to look along — never what to conclude. Read the artifact first.</p>
+  <p class="dek">Eight evaluative words, and the axis each one is actually pointing at. The table says which axis to look along — never what to conclude. Inspect an existing target first.</p>
   <div class="scroll">
   <table>
     <thead><tr><th>Word</th><th>Axis it actually names</th><th>Default filling</th></tr></thead>
     <tbody>
-      <tr><td>nice / clean</td><td>agreement with what is already there</td><td>the neighbouring code or screen is the spec</td></tr>
+      <tr><td>nice / clean</td><td>agreement with applicable conventions</td><td>accepted neighbour within current constraints, not its defects</td></tr>
       <tr><td>modern / slick</td><td>spacing, hierarchy, restraint of colour</td><td>existing tokens; none → two candidates</td></tr>
       <tr><td>properly / solid</td><td>the verification that is missing</td><td>match the repo's existing bar</td></tr>
       <tr><td>fast / snappy</td><td>a number: p95, bundle size, cold start</td><td>measure now, target stated relative to now</td></tr>
@@ -252,7 +252,7 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
 
 <section id="asking">
   <h2><span class="num">05</span> Asking well</h2>
-  <p class="dek">Every question is a closed choice whose options differ in the artifact, not in the adjective.</p>
+  <p class="dek">Use real closed choices for known preferences, or a narrow question for a missing fact or referent whose option space is unknown.</p>
   <div class="cols">
     <div>
       <h3>The shape</h3>
@@ -261,7 +261,7 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
      — consistent with what exists, nothing distinctive
   B. Widen to 24px and let the card lead
      — items per screen drops from 6 to 4</code></pre>
-      <p>Recommended option first and viable on its own; two to four options; one line of consequence each — what the person gets, what they give up.</p>
+      <p>Two to four viable options with consequences. Recommend first only when evidence favors it; otherwise stay neutral. A recommendation is not an executable default or action approval. Ask for an unknown legal entity or date directly, never as an invented menu.</p>
     </div>
     <div>
       <h3>Bad shapes</h3>
@@ -294,7 +294,7 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
 - Acceptance:     &lt;who runs or looks at what, and what result settles it&gt;
 - Not doing:      &lt;at least one — the tempting adjacent thing&gt;
 - Defaults taken: &lt;item — value — source&gt;
-- Open:           &lt;item, and why it does not block&gt; | none</code></pre>
+- Open:           &lt;unresolved item and the work it gates&gt; | none</code></pre>
   <p>The field set is the contract; the labels are not. The block is rendered in whatever language the run is speaking — the same seven fields, in the same order.</p>
   <h3>Short form — the zero-question path</h3>
   <p>When the budget was zero and nothing is open, the full block costs more than the change it governs. The same fields collapse into one line, every slot still present:</p>
@@ -310,11 +310,11 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
   <h3>How agreement is taken</h3>
   <div class="scroll">
   <table>
-    <thead><tr><th>Work</th><th>How agreement is taken</th></tr></thead>
+    <thead><tr><th>Work</th><th>Approval requirement</th></tr></thead>
     <tbody>
-      <tr><td>Reversible, small</td><td>State the lock, proceed on non-objection — the artifact arrives before an objection would have</td></tr>
-      <tr><td>Reversible, large</td><td>State the lock, start on the part nobody could object to, hold the contested part one beat</td></tr>
-      <tr><td>Irreversible / outward-facing</td><td>Explicit yes. Non-objection is not assent when undoing is expensive</td></tr>
+      <tr><td>Reversible, small</td><td>State the lock and proceed without requiring approval; do not record assent that was not observed</td></tr>
+      <tr><td>Reversible, large</td><td>State the lock and proceed only on settled work; a pause supplies no approval</td></tr>
+      <tr><td>Irreversible / outward-facing</td><td>Explicit approval of the resolved action, even when publication is reversible; an existing scoped approval suffices</td></tr>
     </tbody>
   </table>
   </div>
@@ -354,7 +354,7 @@ make test                      # the fixture battery over check and link</code><
 
 <footer>
   <span>clarify — a standalone agent skill</span>
-  <span>The clarified instruction is the artifact. If it needed three questions, it needed one.</span>
+  <span>The clarified instruction is the artifact. Ask only the decisions context cannot settle.</span>
 </footer>
 
 </div>

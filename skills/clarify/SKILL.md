@@ -7,8 +7,8 @@ description: "Turning a subjective request into an instruction both sides would 
 CAPABILITIES_SUMMARY:
 - ambiguity_detection: Decide whether a request has an achievement condition at all, and refuse to fire when it does
 - context_grounding: Resolve evaluative words from the artifact, neighbouring code, repo conventions, and prior corrections before asking anything
-- question_budgeting: Size the number of questions from reversibility x blast radius, never from how unclear the request feels
-- bounded_asking: Emit closed choices with a recommended default, each option stating the difference in the deliverable
+- question_budgeting: Bound preference questions without defaulting necessary user-only inputs
+- bounded_asking: Use real preference choices or narrow missing-input questions; recommend only with evidence
 - prototype_as_question: Replace a question with two concrete candidates where taste is cheaper to see than to describe
 - instruction_lock: Produce a locked instruction with an observable done-state, acceptance check, exclusions, and the defaults taken
 -->
@@ -30,7 +30,7 @@ their terms, and a done-condition a third party could check. Either half alone f
 a measurable criterion serving the wrong intent is precise and useless, and a shared
 intent with no checkable condition is a mood two people happen to share.
 
-**Principles:** Ground before asking · Closed choices, never open questions · Defaults over deadlock · Show instead of ask · Repeated vagueness is delegation
+**Principles:** Ground before asking · Real choices, narrow missing inputs · Grounded defaults · Show instead of ask · Respect delegation
 
 ## Trigger Guidance
 
@@ -50,8 +50,8 @@ Route elsewhere when the task is primarily:
 *what the person is actually after* (intent, in their terms), and *who looks at what, and
 decides it is done* (the condition). Both write themselves → Clarify does not fire; execute
 the request. **Firing on an already-clear request is the same defect as executing a vague
-one.** Only one of them missing tells you which half the run is for — an intent without a
-condition needs grounding, a condition without an intent needs one question.
+one.** Only one missing bounds the run to that half. Ground it, then ask only a material
+user decision that remains; one open parameter is not automatically a shut gate.
 
 **A shut gate still says so, in one line:** `clarify: gate shut — <the done-sentence>`. That
 line is the entire output, it costs the reader nothing, and it is what makes the Removal
@@ -62,24 +62,26 @@ condition below readable — a skill that declines silently leaves no evidence i
 - `GROUND` precedes `ASK`, always. **Asking for something the context already
   answers is the failure mode this skill exists to prevent** — the artifact, the
   neighbouring implementation, and the repo's own conventions hold most of it.
-- The question count comes from the budget table below — from reversibility and
-  blast radius, never from how vague the request felt.
-- Every question is a closed choice, recommended option first, and **each option
-  names the difference in the deliverable**, not in the abstraction. "A: wider spacing /
-  B: higher density" is a choice; "what direction should the design take?" is not.
-- Maximum **3 questions per round, 2 rounds total**. If the second round comes back
-  vague as well, that is delegation: take the default, say which default, proceed.
-  **Asking a third time is prohibited.**
-- Irreversible, outward-facing, or repo-wide work gets at least one confirming
-  question regardless of budget, and waits for `LOCK` approval.
+- The table bounds optional preference questions, not required user-only inputs.
+  Zero is normal; uncertainty alone is not a reason to spend the budget.
+- Use closed choices for safely enumerable preferences; each option names the different
+  deliverable. For an unknown fact or referent, ask only for that field, not invented options.
+  Recommend first only when evidence favors it; otherwise present choices neutrally.
+- Maximum **3 questions in round 1, 1 in round 2**. A second vague reply is delegation
+  only when the person declines to choose within their delegated discretion and adds no
+  unresolved constraint. Confusion, rejection or a partial answer is not delegation.
+  No third clarification round: hold unresolved dependent work, never invent its answer.
+- Before irreversible, outward-facing, or repo-wide work, resolve required selection
+  and factual inputs, then obtain explicit approval of the resolved action. Clarification
+  and approval are distinct; an existing explicit approval covering that action suffices.
 - Where taste is the variable and the work is reversible, **build two candidates
   instead of asking** — a rendered pair converges faster than a paragraph.
 - Never block the whole task on an answer. Everything independent of the open
   question proceeds while it is open.
 - **The lock is presented, not filed.** Agreement is the finish line: the person sees the
   instruction and can object cheaply. Irreversible or outward-facing work waits for an
-  explicit yes; reversible work proceeds on non-objection, with the lock stated up front so
-  objecting stays cheaper than redoing.
+  explicit yes; cheap reversible work proceeds without requiring approval, with the lock
+  stated up front. Proceeding in the same turn is not observed assent.
 - **Intent is restated in the requester's own words**, once, in one sentence — not
   paraphrased into agent vocabulary. A restatement they have to translate back is not a
   restatement they can agree to.
@@ -91,7 +93,7 @@ condition below readable — a skill that declines silently leaves no evidence i
 ## Boundaries
 
 ### Always
-- Look at the actual artifact before translating any evaluative word. "Modern" has no meaning until the current screen is on the table.
+- When a target artifact exists, inspect it before translating an evaluative word. For new work use the available specification and references; do not invent an existing artifact.
 - State every default taken without asking, and the ground it rests on.
 - Give the locked instruction an acceptance check a third party could run.
 - Write at least one exclusion — what this request explicitly does not cover.
@@ -102,10 +104,10 @@ condition below readable — a skill that declines silently leaves no evidence i
 - The request implies deleting or overwriting something you have not looked at.
 
 ### Never
-- Ask an open question ("what would you like to do?", "what matters most?") — it moves the work back to the person who asked precisely because they did not want to do it.
+- Ask broad open-ended questions that return the work ("what would you like to do?"). A narrow missing fact or referent is different; do not invent a closed menu for it.
 - Re-interrogate the parts of the request that were already specific.
 - Ask about anything readable from the repo, the diff, the conversation, or the file in front of you.
-- Translate an evaluative word through a fixed dictionary without inspecting the target.
+- Translate an evaluative word through a fixed dictionary without inspecting an existing target or the available specification.
 - Hold all work hostage to an unanswered question.
 - Turn a small reversible ask into a specification exercise.
 
@@ -115,32 +117,33 @@ condition below readable — a skill that declines silently leaves no evidence i
 
 | Phase | Focus | Required check | Read |
 |-------|-------|----------------|------|
-| `GATE` | Does this need clarifying at all | Neither the intent sentence nor the done-sentence writes itself | `reference/detect.md` |
-| `GROUND` | Fill from context, in source order | Every filled item names its source | `reference/grounding.md` |
+| `GATE` | Does this need clarifying at all | Either sentence needs an unsupported material decision | `reference/detect.md` |
+| `GROUND` | Fill from context, respecting source roles | Every filled item names an applicable source | `reference/grounding.md` |
 | `RESIDUE` | What genuinely remains open | Each residue changes the deliverable | `reference/grounding.md` |
-| `ASK` | Closed choices within budget | Recommended default is first, and viable | `reference/questions.md` |
+| `ASK` | Necessary decisions within budget | Real options or narrow inputs; recommendations have evidence | `reference/questions.md` |
 | `LOCK` | One instruction both sides agree to | Intent is stated in their words; the acceptance check is runnable by another person | `reference/lock.md` |
 
 ## Question Budget
 
 | Blast radius \ Reversibility | Reversible | Irreversible / outward-facing |
 |---|---|---|
-| **Small** (one file, a few lines, a local look) | **0 questions.** Take the default, state the **short lock** (one line, `reference/lock.md`), and let the artifact be the answer | 1 question — confirmation only |
-| **Large** (structure, many files, expensive to redo) | 1 question — direction only | Up to 3 questions, then `LOCK` waits for approval |
+| **Small** (one file, a few lines, a local look) | **0** when grounded or safely delegated; otherwise only the necessary material decision | Resolve missing inputs, then confirm the resolved action |
+| **Large** (structure, many files, expensive to redo) | **0–1** preference question; required user-only inputs within the round limit | Necessary inputs within the round limit, then explicit approval |
 
-A budget of zero is a real answer, not a shortcut. **The person said "make it nice"
-because they were delegating**; spending three questions on a ten-minute reversible
-change bills them for your uncertainty.
+These are maxima, not quotas. Approval is separate from clarification and cannot replace
+selection of a recipient, destructive target or other missing fact. A known essential input
+may use round 2; reaching the cap leaves it unresolved, not defaulted. Ordinary delegated
+small work still takes the **short lock** (`reference/lock.md`) and proceeds without questions.
 
 ## Translating the Evaluative Word
 
 Eight evaluative words, and the axis each one is actually pointing at. The right column
-is the default when nothing in context contradicts it. Read the artifact first — this
+is the default when nothing in context contradicts it. Inspect an existing target first — this
 table says *which axis to look along*, never what to conclude.
 
 | Word | Axis it actually names | Default filling |
 |---|---|---|
-| nice / clean | agreement with what is already there | neighbouring code / screen is the spec |
+| nice / clean | agreement with applicable conventions | accepted neighbour within current constraints, not its defects |
 | modern / slick | spacing, hierarchy, restraint of colour | existing tokens; none → two candidates |
 | properly / solid | the verification that is missing | match the repo's existing bar (tests, error paths, types) |
 | fast / snappy | a number: p95, bundle size, cold start | measure now, target stated relative to now |
@@ -156,7 +159,7 @@ this skill is most often asked in.
 ## Gotchas
 
 - **Over-clarifying is the dominant failure**, not under-clarifying. Three questions on a reversible thirty-line change reads as refusal to work.
-- **A second vague answer means "you decide."** Treat it as an answer, take the default, and say so in one line. Re-asking after it burns the delegation.
+- **Respect an actual delegation, not merely a second vague reply.** Do not re-ask delegated preferences; do not turn confusion or an unanswered fact into permission to decide.
 - **Options that differ only in adjective are not options.** If the reader cannot picture two different artifacts, the question is unasked.
 - **The specific parts of a request are load-bearing.** "Make the header spacing nice" is vague about the amount only — scope, target, and intent are already given. Clarify the residue, not the sentence.
 - **Show beats ask on taste, but not on cost.** Two candidates are a question only where building the second is cheap.
@@ -186,7 +189,7 @@ The clarification emits one of three shapes, and nothing else:
 |---|---|
 | The gate stayed shut | one line: `clarify: gate shut — <the done-sentence>` |
 | Zero questions, nothing open | one line naming what was read, then the **short lock** — one line carrying every field (`reference/lock.md`) |
-| Everything else | that same line, then the questions (up to three closed choices, recommended first), then the full `LOCK` block |
+| Everything else | that same line, then the necessary questions (`reference/questions.md`), then the full `LOCK` block |
 
 **The work then proceeds under the lock and reports as itself.** "Nothing else" bounds this
 output, not the run: on the zero-question path the artifact is what the person is waiting for,
@@ -201,11 +204,11 @@ config; identifiers, paths, and commands stay in English.
 | File | Read this when... |
 |------|-------------------|
 | `reference/detect.md` | Deciding whether the gate opens, and which class of vagueness it is |
-| `reference/grounding.md` | Filling from context: source order, what each source can settle, and what counts as residue |
+| `reference/grounding.md` | Filling from context: source roles, what each source can settle, and what counts as residue |
 | `reference/questions.md` | Writing the choices — good and bad shapes, and the two-round rule |
 | `reference/lock.md` | Writing the locked instruction |
 | `reference/traps.md` | Before a run that feels like it needs many questions |
 
 ---
 
-> The clarified instruction is the artifact. If it needed three questions, it needed one.
+> The clarified instruction is the artifact. Ask only the decisions context cannot settle.

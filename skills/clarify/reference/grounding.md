@@ -1,23 +1,30 @@
 # grounding — fill from context before asking
 
-Purpose: the order of sources, what each can settle, and what is left as residue.
+Purpose: source authority, what each can settle, and what is left as residue.
 Read at `GROUND` and `RESIDUE`.
 
-## Source order
+## Source roles
 
-Stop at the first source that settles an item. Record the source with the item —
-a filled value with no source is a guess wearing a fact's clothes.
+Reading order is not authority. When a target exists, inspect it before translating an
+evaluative word; for new work use the available specification and references. If access is
+unavailable, disclose it; request access only when the missing evidence is needed to proceed.
+Do not require a nonexistent artifact or claim to have inspected one.
 
-| # | Source | Settles | Cannot settle |
+Before a baseline value becomes the desired state, check applicable declared constraints and
+current requester corrections. A current convention beats an inconsistent old example;
+a current correction beats an older preference. Neither overrides a binding constraint by
+implication: unresolved conflicts between applicable requirements remain residue.
+
+| Role | Source | Can settle | Cannot settle |
 |---|---|---|---|
-| 1 | **The artifact itself** — open the file, render the screen, run the thing | which defects actually exist, and their size | what the person prefers among defensible options |
-| 2 | **The neighbour** — the sibling component, the adjacent module, the last accepted output | house style, naming, density, structure | anything the neighbour is itself wrong about |
-| 3 | **Declared convention** — the agent-instructions file, lint and formatter config, design tokens, type strictness | the bar the repo already holds itself to | a bar the repo has never set |
-| 4 | **This conversation** — earlier corrections, rejected attempts, stated preferences | what was already ruled out; do not re-offer it | anything not yet discussed |
-| 5 | **Durable memory / past feedback** | standing preferences across sessions | whether the preference still holds — verify if load-bearing |
+| **Baseline evidence** | Artifact | what exists and what is defective | the desired state merely by existing |
+| **Comparison evidence** | Neighbour / accepted output | a matching precedent within applicable constraints | defects or superseded patterns |
+| **Normative constraint** | Declared convention / specification | requirements within its stated scope | choices the rule leaves open |
+| **Requester preference** | Current request / conversation | intended changes, corrections, choices already made | unstated facts or permission |
+| **Fallback preference** | Durable memory / past feedback | a still-applicable preference | overriding current corrections or binding rules |
 
-**Rule:** an item answerable at levels 1–3 is never a question. Asking it says the
-context was not read.
+Record the source with each filled item. Do not ask what these sources actually settle;
+do not label an implementation guess a repo convention.
 
 ## Turning the word into an observable
 
@@ -37,10 +44,11 @@ and the residue is real.
 An open item survives into `ASK` only if **both** hold:
 
 1. different answers produce **materially different deliverables** — not different wording of the same one, and
-2. **no default is defensible** from sources 1–5.
+2. **no default is defensible** from applicable evidence or delegated discretion.
 
-Everything else is a default. A default is taken silently in the work and named
-explicitly in the `LOCK` block — that is the trade: fewer questions, full disclosure.
+Use a default only within the evidence or discretion that supports it, and name that
+basis in `LOCK`. Delegation can settle a preference, not supply an unknown fact or approval.
 
-Rank surviving residues by how much of the deliverable turns on them, and cut to the
-budget. **A residue below the cut is a default, never a dropped concern.**
+Rank residues by their effect on the deliverable. **A budget limit does not turn an
+unresolved item into a default.** Obtain necessary user-only inputs within the round limit;
+if they remain unresolved, hold dependent work rather than pretending the lock is complete.
