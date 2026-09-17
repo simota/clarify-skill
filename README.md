@@ -2,7 +2,7 @@
 
 Turn "make it nice" — "clean this up", "do it properly", "that's not quite it" — into **one
 instruction both sides would agree to**, using as few questions as the context allows.
-Five phases, a question budget sized by reversibility rather than by how vague the request felt, and a
+Five phases, a preference budget sized by reversibility, without defaulting required user inputs, and a
 lock that names every default taken silently. **It clarifies; it does not widen the request.**
 
 **Clear means agreeable, not merely measurable.** The bar is that the person who asked can read
@@ -63,10 +63,10 @@ Or let it trigger on its own whenever a request arrives with no achievement cond
 `GATE → GROUND → RESIDUE → ASK → LOCK`
 
 1. **GATE** — two sentences have to write themselves: *what the person is after*, in their words, and *who looks at what and decides it is done*. Both do → the skill does not fire, and says so in one line. Firing on a clear request costs the same as executing a vague one.
-2. **GROUND** — fill the evaluative word from the artifact itself, the neighbouring implementation, and the repo's declared conventions, before asking anything.
+2. **GROUND** — inspect an existing artifact or available specification, distinguishing baseline evidence from applicable conventions and current corrections.
 3. **RESIDUE** — keep only the open items where different answers produce materially different deliverables *and* no default is defensible.
-4. **ASK** — closed choices, recommended option first, sized by a reversibility × blast-radius budget. Zero questions is a normal outcome; two rounds is the maximum.
-5. **LOCK** — the intent in the requester's own words, a target, an observable done-state, an acceptance check a third party can run, an exclusion, and every default taken silently — stated back so that disagreeing costs one word. On the zero-question path the same fields collapse into a single line. Reversible work proceeds on non-objection; irreversible work waits for an explicit yes.
+4. **ASK** — real preference choices or narrow missing-input questions; recommend only with evidence. Zero questions is normal; two rounds is the maximum, not permission to default an unanswered fact.
+5. **LOCK** — the intent in the requester's own words, a target, an observable done-state, an acceptance check a third party can run, an exclusion, and every default taken silently — stated back so that disagreeing costs one word. On the zero-question path the same fields collapse into a single line. Cheap reversible work needs no approval; this is not observed assent. Irreversible or outward-facing work waits for explicit approval of the resolved action.
 
 ### What a run emits
 
@@ -88,7 +88,7 @@ change with three questions bills them for the agent's uncertainty. So the effor
 context, and the questions are spent only on what reading cannot settle.
 
 - **Over-clarifying is the dominant failure**, not under-clarifying — the traps file leads with it.
-- **A second vague answer is an answer.** It means *you decide*: take the default, name it, proceed. There is no third round.
+- **Delegation is an answer; confusion is not.** Respect a decision to let the agent choose, but do not infer it from an unclear or partial reply. There is no third clarification round; missing facts remain unresolved.
 - **A default is not a shortcut.** Every value taken without asking appears in the lock with its source. Fewer questions, nothing hidden.
 - **Show instead of ask.** Where the variable is taste and building the second candidate is cheap, two rendered options ask the question better than any sentence can.
 - **An open question is not a stop.** Everything it does not gate keeps moving.
@@ -110,7 +110,7 @@ Paths below are relative to `skills/clarify/`.
 |------|---------------|
 | `SKILL.md` | The contract: the two gate sentences, the workflow, the question budget, the three output shapes, and the translation table for eight evaluative words |
 | `reference/detect.md` | The gate sentences, the six classes of vagueness, the false positives that keep it shut, and the non-English trigger mapping |
-| `reference/grounding.md` | Source order, what each source can and cannot settle, and what qualifies as residue |
+| `reference/grounding.md` | Source roles, what each source can and cannot settle, and what qualifies as residue |
 | `reference/questions.md` | Question shapes good and bad, the two-round rule, and show-instead-of-ask |
 | `reference/lock.md` | The locked-instruction block, its one-line short form, the rule for each field, and how agreement is taken |
 | `reference/traps.md` | The failure modes, over-clarifying first among them |
