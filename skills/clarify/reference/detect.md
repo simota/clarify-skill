@@ -37,6 +37,13 @@ Each class has a different residue, so name it before grounding.
 - Applicable context selects the desired state. A token scale or a sibling's mere existence is not a choice among its values; check authority and conflicts in `reference/grounding.md`.
 - A small reversible draft is safely delegated and cheaper to show, with no missing user-only fact or authority. Size alone does not settle ambiguity.
 - The person has decided and is asking for execution. Clarifying then is a refusal in polite clothing.
+- An installed skill that owns this task already runs its own clarifying dialogue or diagnosis.
+  Hand off once; a second round of the same questions is over-clarifying twice. A named owner
+  that is not installed is no reason to stop — do the task normally.
+
+A shut gate prints `clarify: gate shut — <the done-sentence>` only when Clarify was called by
+name. Selected on its own, a shut gate is silent: the request was clear, and announcing that is
+noise.
 
 ## Signals that raise the class, not the question count
 

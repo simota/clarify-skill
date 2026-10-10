@@ -106,12 +106,25 @@ case_ 'a 9th word row, prose stale'      fail 'awk "{print} /^\\| refactor this 
 #
 # A rename keeps every count intact, so these are exactly the edits the count scans cannot see.
 case_ 'row key renamed, detect stale'    fail 'sed "s/refactor this |/tidy this up |/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
-case_ 'row key renamed in both files'    ok   'for f in $SKILL/SKILL.md $SKILL/reference/detect.md; do
+case_ 'row key renamed, page stale'      fail 'for f in $SKILL/SKILL.md $SKILL/reference/detect.md; do
                                                  sed "s/refactor this |/tidy this up |/" "$f" > _ && mv _ "$f"
                                                done'
+case_ 'row key renamed everywhere'       ok   'for f in $SKILL/SKILL.md $SKILL/reference/detect.md; do
+                                                 sed "s/refactor this |/tidy this up |/" "$f" > _ && mv _ "$f"
+                                               done
+                                               sed "s|<td>refactor this</td>|<td>tidy this up</td>|" docs/index.html > _ && mv _ docs/index.html'
+case_ 'page drops a translation row'     fail 'grep -v "<tr><td>easy to use</td>" docs/index.html > _ && mv _ docs/index.html'
+case_ 'page reorders translation rows'   fail 'awk "/<tr><td>easy to use<\/td>/{h=\$0; next} {print} /<tr><td>refactor this<\/td>/{print h}" docs/index.html > _ && mv _ docs/index.html'
+case_ 'no page at all'                   ok   'rm docs/index.html'
 case_ 'phase renamed in the chain only'  fail 'sed "s/RESIDUE -> ASK/LEFTOVER -> ASK/; s/RESIDUE → ASK/LEFTOVER → ASK/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
 case_ 'phase renamed in the table only'  fail 'sed "s/RESIDUE[^ ]* | What genuinely/LEFTOVER | What genuinely/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
-case_ 'phase renamed everywhere'         ok   'sed "s/RESIDUE/LEFTOVER/g" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
+case_ 'phase renamed in SKILL.md only'   fail 'sed "s/RESIDUE/LEFTOVER/g" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
+case_ 'phase renamed everywhere'         ok   'for f in $SKILL/SKILL.md README.md docs/index.html; do
+                                                 sed "s/RESIDUE/LEFTOVER/g" "$f" > _ && mv _ "$f"
+                                               done'
+case_ 'phase chain drifts in README.md'  fail 'sed "s/RESIDUE → ASK/ASK → RESIDUE/" README.md > _ && mv _ README.md'
+case_ 'an unrelated arrow chain'         ok   'printf "TDD runs RED → GREEN → REFACTOR.\n" >> README.md'
+case_ 'phase chain drifts in the page'   fail 'sed "s/GROUND → RESIDUE/GROUND → EXTRA → RESIDUE/" docs/index.html > _ && mv _ docs/index.html'
 case_ 'the phase chain is deleted'       fail 'grep -v "GATE → GROUND" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
 case_ 'frontmatter name drifts'          fail 'sed "s/^name: clarify/name: clarify-v2/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
 
@@ -209,6 +222,19 @@ link_case_ 'PROJECT= links the repo'     ok   'link PROJECT=proj' \
 link_case_ 'SKILLS_DIR= overrides all'   ok   'link SKILLS_DIR=elsewhere/skills' \
 	'[ "$(readlink elsewhere/skills/clarify)" = "$S" ] &&
 	 [ ! -e "$H/.claude/skills/clarify" ]'
+
+# The same checkout reached by another spelling is still ours — relinking and unlinking must agree.
+link_case_ 'our link, another spelling'  ok   'link' \
+	'[ "$(readlink "$H/.codex/skills/clarify")" = "$d/alias/$SKILL" ]' \
+	'ln -s "$d" "$d/alias" && mkdir -p "$H/.codex/skills" && ln -s "$d/alias/$SKILL" "$H/.codex/skills/clarify"'
+
+link_case_ 'unlink takes that spelling'  ok   'unlink' \
+	'[ ! -e "$H/.codex/skills/clarify" ] && [ ! -L "$H/.codex/skills/clarify" ]' \
+	'ln -s "$d" "$d/alias" && mkdir -p "$H/.codex/skills" && ln -s "$d/alias/$SKILL" "$H/.codex/skills/clarify"'
+
+link_case_ 'a dangling link is refused'  fail 'link' \
+	'[ -L "$H/.codex/skills/clarify" ]' \
+	'mkdir -p "$H/.codex/skills" && ln -s "$d/gone" "$H/.codex/skills/clarify"'
 
 link_case_ 'unlink removes only ours'    ok   'unlink' \
 	'[ ! -e "$H/.claude/skills/clarify" ] &&

@@ -71,6 +71,11 @@ endif
 # `guard|destination` carries a `|`, which the shell reads as a pipe in an unquoted `for` list.
 QTARGETS := $(foreach t,$(TARGETS),'$(t)')
 
+# "Is $$d our link?" compares where the link lands, not how it is spelled: the same checkout
+# reached through a symlinked parent, or linked with a relative path, is still this repo. A
+# string compare against readlink would refuse to relink it and refuse to unlink it.
+OURS = [ -L "$$d" ] && [ "$$(cd "$$d" 2>/dev/null && pwd -P)" = "$$(cd "$(SKILL)" && pwd -P)" ]
+
 .PHONY: help link unlink status check test pages
 
 help:
@@ -78,7 +83,7 @@ help:
 	@echo "make unlink    [AGENT=<a>] [PROJECT=<repo>] [SKILLS_DIR=<dir>]  remove the links this repo owns"
 	@echo "make status    [AGENT=<a>] [PROJECT=<repo>] [SKILLS_DIR=<dir>]  report each destination"
 	@echo "make check                                                      references resolve, counts and identifiers agree"
-	@echo "make test                                                       run the fixture battery over make check"
+	@echo "make test                                                       run the fixture battery over make check and make link"
 	@echo ""
 	@echo "make pages                                                      preview the docs/ site (PAGES_PORT=$(PAGES_PORT))"
 	@echo ""
@@ -96,7 +101,7 @@ link:
 		guard=$${t%%|*}; dir=$${t##*|}; d="$$dir/$(NAME)"; \
 		if [ ! -d "$$guard" ]; then echo "skip     $$d — $$guard does not exist"; continue; fi; \
 		if [ -L "$$d" ]; then \
-			if [ "$$(readlink "$$d")" = "$(SKILL)" ]; then echo "ok       $$d already linked"; n=$$((n+1)); continue; fi; \
+			if $(OURS); then echo "ok       $$d already linked"; n=$$((n+1)); continue; fi; \
 			echo "refusing $$d is a symlink to $$(readlink "$$d") — resolve it, then re-run" >&2; exit 1; \
 		elif [ -e "$$d" ]; then \
 			echo "refusing $$d exists and is not a symlink — move it aside first" >&2; exit 1; \
@@ -110,7 +115,7 @@ link:
 unlink:
 	@for t in $(QTARGETS); do \
 		dir=$${t##*|}; d="$$dir/$(NAME)"; \
-		if [ -L "$$d" ] && [ "$$(readlink "$$d")" = "$(SKILL)" ]; then rm "$$d"; echo "unlinked $$d"; \
+		if $(OURS); then rm "$$d"; echo "unlinked $$d"; \
 		elif [ -L "$$d" ]; then echo "skip     $$d — links to $$(readlink "$$d"), not this repo"; \
 		elif [ -e "$$d" ]; then echo "skip     $$d — not a symlink, leaving it alone"; \
 		else echo "none     $$d"; fi; \
@@ -131,10 +136,13 @@ status:
 # both are the kind of number prose keeps after the table it describes has moved on:
 #
 # Counts are only half of it. A rename keeps every count intact while leaving the other file
-# pointing at a row that no longer exists, so three identifiers are matched across files as well:
+# pointing at a row that no longer exists, so identifiers are matched across files as well:
 # the frontmatter `name` against the skill directory, the phase chain against the Workflow table,
-# and every row `reference/detect.md` maps a non-English trigger onto against the translation
-# table it claims to key into. Those are the edits that pass a count check and still break a reader.
+# every other phase chain the prose or the page prints against that same chain (a chain that names
+# none of the skill's phases, such as RED → GREEN → REFACTOR, is someone else's), every row
+# `reference/detect.md` maps a non-English trigger onto against the translation table it claims
+# to key into, and the published page's copy of that table against its rows. Those are the edits
+# that pass a count check and still break a reader.
 #
 #   phases              the workflow a reader is told to run, counted as the rows of the Workflow
 #                       table in SKILL.md — a sixth phase nobody renamed the prose for is a phase
@@ -221,6 +229,15 @@ check:
 	dangling=$$(awk '/^\| Japanese \| Lands on the row \|/{t=1;next} t&&/^\|---/{next} t&&/^\|/{split($$0,a,"|"); v=a[3]; gsub(/^ +| +$$/,"",v); print v; next} t{exit}' "$(SKILL)/reference/detect.md" \
 		| while read -r v; do printf '%s\n' "$$keys" | grep -qxF "$$v" || echo "MISS detect.md maps a trigger onto row '$$v', which the translation table does not define"; done); \
 	if [ -n "$$dangling" ]; then echo "$$dangling" >&2; fail=1; fi; \
+	stray=$$(printf '%s\n' "$$claimsrc" | grep -oE '[A-Z]+( → [A-Z]+)+' | sort -u | while read -r c; do \
+		cs=$$(printf '%s\n' "$$c" | sed 's/ → /@/g' | tr '@' '\n'); \
+		printf '%s\n' "$$cs" | grep -qxF "$$chain" || continue; \
+		[ "$$cs" = "$$chain" ] || echo "MISS a phase chain reads '$$c', SKILL.md runs the Workflow table's phases"; done); \
+	if [ -n "$$stray" ]; then echo "$$stray" >&2; fail=1; fi; \
+	if [ -f docs/index.html ]; then \
+		pkeys=$$(awk '/<section id="words">/{t=1} t&&/<\/section>/{exit} t' docs/index.html | grep -oE '<tr><td>[^<]*</td>' | sed 's/^<tr><td>//; s/<\/td>$$//'); \
+		[ "$$pkeys" = "$$keys" ] || { echo "MISS the page's translation table does not name the rows SKILL.md defines, in the same order" >&2; fail=1; }; \
+	fi; \
 	if [ $$fail -eq 0 ]; then echo "self-contained: all references resolve inside $(SKILL), $$p phases, $$w evaluative words, identifiers matched across files"; else exit 1; fi
 
 # GitHub Pages serves docs/ as static files on `main`; this only previews the same tree locally,

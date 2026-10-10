@@ -26,6 +26,18 @@ implication: unresolved conflicts between applicable requirements remain residue
 Record the source with each filled item. Do not ask what these sources actually settle;
 do not label an implementation guess a repo convention.
 
+## How far to look
+
+A source counts as readable when it can be located for about what a question would cost the
+person. Past that point — a broken index over thousands of files, a convention that exists
+somewhere in a monorepo but nowhere near the target — run one short, bounded search, then ask
+for the **locator**: the file, ID or path where the answer lives, not the answer itself. Say
+that the search came up short; never present an unread source as grounding.
+
+Grounding reads; it does not run. A measurement, a benchmark or a build that is expensive, or
+that has side effects such as real payments or production load, is execution work and waits
+for the lock. Existing logs and reports are read, not regenerated.
+
 ## Turning the word into an observable
 
 Grounding is finished for an item when it reads as an observable state, not an

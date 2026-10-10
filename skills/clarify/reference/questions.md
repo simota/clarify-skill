@@ -72,6 +72,11 @@ neither lands, the reply names the delta and grounding restarts with real eviden
 Applies to: visual design, copy tone, layout density, naming sets.
 Does not apply to: schema shape, irreversible migrations, anything expensive to build twice.
 
+"Cheap" is a condition on both candidates, not a feeling: built locally, without a paid or
+metered call, without an external API, and without writing outside the working tree. A
+candidate that costs money or leaves side effects is the work itself, not a question about it —
+ask the concrete preference instead, and let whoever owns construction build the chosen one.
+
 ## Ending on agreement
 
 The round ends at the lock, not at the last answer. State the intent line back once, in the
@@ -84,3 +89,9 @@ assent; even observed silence is not approval for an irreversible or outward act
 
 Do everything the open question does not gate, and say in one line what waits on it.
 A question is not a stop — a question with nothing moving behind it is.
+
+"Does not gate" is decided by content, not by file boundaries: work moves only if it would
+come out the same under every remaining answer. Tests, file names and docs that would encode
+one of the options — the storage engine, the tone, the metric — are gated even when they
+compile on their own. Waiting is not simulated: report what moved and what waits, then stop
+the turn rather than implying the work continues in the background.

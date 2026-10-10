@@ -40,18 +40,27 @@ in the same order. **Never drop a field because its label translates awkwardly.*
 ## Field rules
 
 - **Intent** — the sentence the person would sign. Their vocabulary, not the agent's; one
-  sentence, no "and". This is the field agreement actually happens on — every other field
-  is how that agreement is made checkable. **If the intent line is guessed rather than
-  grounded, say so in it** ("taking the goal to be …") so disagreeing costs one word.
+  sentence, no "and". Keep their words and attach what grounding resolved them to —
+  `make it nice: the cards match the approved list view` — rather than copying the vague
+  word back alone, which agrees to nothing. This is the field agreement actually happens
+  on — every other field is how that agreement is made checkable. **If the intent line is
+  guessed rather than grounded, say so in it** ("taking the goal to be …") so disagreeing
+  costs one word.
 - **Target** — a path, a component, or a named range. "the whole thing" is not a target.
 - **Done state** — must survive the adjective test: delete every evaluative word and it
   still says what will be true. `card padding is 16px, matching the list view`, not
   `the spacing is tidy`.
 - **Acceptance** — a command, a visual comparison against a named reference, or a number
   against a baseline. **"you'll see it" is not an acceptance condition.** Someone other
-  than the author has to be able to run it.
-- **Not doing** — never empty. The exclusion is the cheapest scope control available,
-  and the thing that was obviously out of scope is exactly what gets added otherwise.
+  than the author has to be able to run the objective part. A subjective quality — tone,
+  taste — is accepted by the named person who judges it ("Aiko reads it and signs off");
+  never substitute a mechanical proxy, such as a character count, and report it as that
+  judgement.
+- **Not doing** — never empty, never invented. Name the tempting adjacent thing; it is the
+  cheapest scope control available, and the thing that was obviously out of scope is exactly
+  what gets added otherwise. When the target already bounds the change and nothing adjacent
+  tempts, state the bound itself (`nothing outside this caption`) rather than inventing a
+  non-goal nobody was considering.
 - **Defaults taken** — every value taken without asking, with its source. This is the price
   of a small question budget: fewer questions, nothing hidden.
 - **Open** — name unresolved items and the work they gate. A completed lock has no blocking items; an exhausted question budget does not authorize dependent work.
