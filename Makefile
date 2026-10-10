@@ -138,7 +138,8 @@ status:
 # Counts are only half of it. A rename keeps every count intact while leaving the other file
 # pointing at a row that no longer exists, so identifiers are matched across files as well:
 # the frontmatter `name` against the skill directory, the phase chain against the Workflow table,
-# every other phase chain the prose or the page prints against that same chain, every row
+# every other phase chain the prose or the page prints against that same chain (a chain that names
+# none of the skill's phases, such as RED → GREEN → REFACTOR, is someone else's), every row
 # `reference/detect.md` maps a non-English trigger onto against the translation table it claims
 # to key into, and the published page's copy of that table against its rows. Those are the edits
 # that pass a count check and still break a reader.
@@ -229,7 +230,9 @@ check:
 		| while read -r v; do printf '%s\n' "$$keys" | grep -qxF "$$v" || echo "MISS detect.md maps a trigger onto row '$$v', which the translation table does not define"; done); \
 	if [ -n "$$dangling" ]; then echo "$$dangling" >&2; fail=1; fi; \
 	stray=$$(printf '%s\n' "$$claimsrc" | grep -oE '[A-Z]+( → [A-Z]+)+' | sort -u | while read -r c; do \
-		[ "$$(printf '%s\n' "$$c" | sed 's/ → /@/g' | tr '@' '\n')" = "$$chain" ] || echo "MISS a phase chain reads '$$c', SKILL.md runs the Workflow table's phases"; done); \
+		cs=$$(printf '%s\n' "$$c" | sed 's/ → /@/g' | tr '@' '\n'); \
+		printf '%s\n' "$$cs" | grep -qxF "$$chain" || continue; \
+		[ "$$cs" = "$$chain" ] || echo "MISS a phase chain reads '$$c', SKILL.md runs the Workflow table's phases"; done); \
 	if [ -n "$$stray" ]; then echo "$$stray" >&2; fail=1; fi; \
 	if [ -f docs/index.html ]; then \
 		pkeys=$$(awk '/<section id="words">/{t=1} t&&/<\/section>/{exit} t' docs/index.html | grep -oE '<tr><td>[^<]*</td>' | sed 's/^<tr><td>//; s/<\/td>$$//'); \

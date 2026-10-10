@@ -123,6 +123,7 @@ case_ 'phase renamed everywhere'         ok   'for f in $SKILL/SKILL.md README.m
                                                  sed "s/RESIDUE/LEFTOVER/g" "$f" > _ && mv _ "$f"
                                                done'
 case_ 'phase chain drifts in README.md'  fail 'sed "s/RESIDUE → ASK/ASK → RESIDUE/" README.md > _ && mv _ README.md'
+case_ 'an unrelated arrow chain'         ok   'printf "TDD runs RED → GREEN → REFACTOR.\n" >> README.md'
 case_ 'phase chain drifts in the page'   fail 'sed "s/GROUND → RESIDUE/GROUND → EXTRA → RESIDUE/" docs/index.html > _ && mv _ docs/index.html'
 case_ 'the phase chain is deleted'       fail 'grep -v "GATE → GROUND" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
 case_ 'frontmatter name drifts'          fail 'sed "s/^name: clarify/name: clarify-v2/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
