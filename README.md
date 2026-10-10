@@ -62,17 +62,17 @@ Or let it trigger on its own whenever a request arrives with no achievement cond
 
 `GATE → GROUND → RESIDUE → ASK → LOCK`
 
-1. **GATE** — two sentences have to write themselves: *what the person is after*, in their words, and *who looks at what and decides it is done*. Both do → the skill does not fire, and says so in one line. Firing on a clear request costs the same as executing a vague one.
+1. **GATE** — two sentences have to write themselves: *what the person is after*, in their words, and *who looks at what and decides it is done*. Both do → the skill does not fire: one line says so when it was called by name, nothing at all when it selected itself. Firing on a clear request costs the same as executing a vague one. An installed skill that owns the task and already runs its own dialogue gets the request instead — once.
 2. **GROUND** — inspect an existing artifact or available specification, distinguishing baseline evidence from applicable conventions and current corrections.
 3. **RESIDUE** — keep only the open items where different answers produce materially different deliverables *and* no default is defensible.
-4. **ASK** — real preference choices or narrow missing-input questions; recommend only with evidence. Zero questions is normal; two rounds is the maximum, not permission to default an unanswered fact.
-5. **LOCK** — the intent in the requester's own words, a target, an observable done-state, an acceptance check a third party can run, an exclusion, and every default taken silently — stated back so that disagreeing costs one word. On the zero-question path the same fields collapse into a single line. Cheap reversible work needs no approval; this is not observed assent. Irreversible or outward-facing work waits for explicit approval of the resolved action.
+4. **ASK** — real preference choices or narrow missing-input questions; recommend only with evidence. Zero questions is normal; two rounds is the maximum, not permission to default an unanswered fact. Two rendered candidates replace a taste question only when both are cheap, local and side-effect-free.
+5. **LOCK** — the intent in the requester's own words with what grounding resolved them to, a target, an observable done-state, an acceptance check a third party can run (or, for taste, the named person's sign-off), an exclusion or a stated bound, and every default taken silently — stated back so that disagreeing costs one word. On the zero-question path the same fields collapse into a single line. Cheap reversible work needs no approval; this is not observed assent. Irreversible or outward-facing work waits for explicit approval of the resolved action.
 
 ### What a run emits
 
 | Run | Output |
 |---|---|
-| The gate stayed shut | one line: `clarify: gate shut — <the done-sentence>` |
+| The gate stayed shut | called by name: one line, `clarify: gate shut — <the done-sentence>`; selected on its own: nothing |
 | Zero questions, nothing open | one line naming what was read, then the **short lock** — one line carrying every field |
 | Everything else | that same line, the questions, then the full lock block |
 
@@ -90,9 +90,9 @@ context, and the questions are spent only on what reading cannot settle.
 - **Over-clarifying is the dominant failure**, not under-clarifying — the traps file leads with it.
 - **Delegation is an answer; confusion is not.** Respect a decision to let the agent choose, but do not infer it from an unclear or partial reply. There is no third clarification round; missing facts remain unresolved.
 - **A default is not a shortcut.** Every value taken without asking appears in the lock with its source. Fewer questions, nothing hidden.
-- **Show instead of ask.** Where the variable is taste and building the second candidate is cheap, two rendered options ask the question better than any sentence can.
-- **An open question is not a stop.** Everything it does not gate keeps moving.
-- **A shut gate says so.** Declining is reported in one line, not silently — otherwise nobody can tell the skill has stopped earning its place.
+- **Show instead of ask.** Where the variable is taste and both candidates are cheap, local and side-effect-free, two rendered options ask the question better than any sentence can. A paid or external candidate is the work, not a question.
+- **An open question is not a stop.** Everything whose content no answer would change keeps moving; anything that would bake one answer in waits.
+- **An invoked gate says so; a selected one stays quiet.** Declining an explicit call is reported in one line — otherwise nobody can tell the skill has stopped earning its place — but a clear request the skill merely matched gets the work, not a status line.
 - **The cheapest outcome is a corrected intent line.** A guessed intent stated plainly can be disagreed with in one word; a correct intent left unstated cannot.
 
 ## Layout
@@ -103,6 +103,8 @@ context, and the questions are spent only on what reading cannot settle.
 | `tools/check.sh` | The fixture battery `make test` runs — what keeps `make check` and `make link` honest |
 | `skills/clarify/` | The skill itself — the directory `make link` symlinks |
 | `docs/index.html` | The published site — one self-contained page explaining the workflow |
+| `eval/` | The 128 synthetic adversarial cases, the predictions frozen before each policy edit, and the judgments after it — contract witnesses, not rollouts (`eval/README.md`) |
+| `.github/workflows/check.yml` | Runs `make check` and `make test` on every push and pull request, on Linux and macOS |
 
 Paths below are relative to `skills/clarify/`.
 

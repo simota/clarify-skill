@@ -61,6 +61,7 @@
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1080px;margin:0 auto;padding:0 28px 96px}
+@media (max-width:520px){.wrap{padding:0 16px 72px}}
 
 .mast{padding:56px 0 30px;border-bottom:1px solid var(--line)}
 .eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ask);margin:0 0 14px}
@@ -153,6 +154,7 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
   <a href="#install">Install</a>
 </nav>
 
+<main>
 <section id="gate">
   <h2><span class="num">01</span> The gate — most requests do not need this</h2>
   <p class="dek">The first thing the skill does is try not to run.</p>
@@ -165,7 +167,7 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
     <span class="lbl">Symmetry</span>
     <p>Firing on an already-clear request is the same defect as executing a vague one. Both spend the requester's attention on the agent's uncertainty.</p>
   </div>
-  <p>A shut gate still says so, in one line — <code>clarify: gate shut — &lt;the done-sentence&gt;</code>. That line is the entire output. A skill that declines silently leaves no evidence it declined, and no way to notice it has stopped earning its place.</p>
+  <p>When Clarify was called by name, a shut gate says so in one line — <code>clarify: gate shut — &lt;the done-sentence&gt;</code> — and that line is the entire clarification output: a skill that declines an explicit call silently leaves no evidence it declined, and no way to notice it has stopped earning its place. When it selected itself and the gate shuts, it prints nothing and the work simply happens — announcing that a clear request was clear is noise.</p>
   <h3>Six classes of vagueness</h3>
   <div class="scroll">
   <table>
@@ -180,7 +182,7 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
     </tbody>
   </table>
   </div>
-  <p><strong>False positives keep the gate shut:</strong> the outcome is already specified ("set header padding to 16px so it looks nice") · applicable context selects the desired state without an unresolved conflict · a small reversible draft is safely delegated with no missing user-only facts. A token scale or one open parameter alone does not close the gate · the person has decided and is asking for execution.</p>
+  <p><strong>False positives keep the gate shut:</strong> the outcome is already specified ("set header padding to 16px so it looks nice") · applicable context selects the desired state without an unresolved conflict · a small reversible draft is safely delegated with no missing user-only facts. A token scale or one open parameter alone does not close the gate · the person has decided and is asking for execution · an installed skill that owns the task already runs its own clarifying dialogue — hand off once. A named owner that is not installed is never a reason to stall.</p>
 </section>
 
 <section id="phases">
@@ -225,7 +227,7 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
     <span class="lbl">Rounds</span>
     <p>Round 1 asks at most three necessary questions; round 2 at most one unresolved essential input or new material fork. <strong>There is no round 3</strong>. Respect genuine delegation, not confusion or a partial answer. A cap leaves missing facts unresolved; it does not turn them into defaults. Approval of the resolved action is separate.</p>
   </div>
-  <p>A budget of zero is a real answer, not a shortcut. And an open question is never a stop: everything it does not gate keeps moving while it is open.</p>
+  <p>A budget of zero is a real answer, not a shortcut. And an open question is never a stop: work whose content would be the same under every answer keeps moving while it is open. Work that would bake one answer in — its names, tests, vocabulary — waits, even when it compiles on its own.</p>
 </section>
 
 <section id="words">
@@ -238,15 +240,16 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
       <tr><td>nice / clean</td><td>agreement with applicable conventions</td><td>accepted neighbour within current constraints, not its defects</td></tr>
       <tr><td>modern / slick</td><td>spacing, hierarchy, restraint of colour</td><td>existing tokens; none → two candidates</td></tr>
       <tr><td>properly / solid</td><td>the verification that is missing</td><td>match the repo's existing bar</td></tr>
-      <tr><td>fast / snappy</td><td>a number: p95, bundle size, cold start</td><td>measure now, target stated relative to now</td></tr>
+      <tr><td>fast / snappy</td><td>a number: p95, bundle size, cold start</td><td>the metric they judge by first; existing measurements as baseline</td></tr>
       <tr><td>easy to use</td><td>steps and hesitation on one named task</td><td>pick the single primary path, fix that</td></tr>
       <tr><td>whatever / up to you</td><td>explicit delegation</td><td>shortest correct implementation, shown afterwards</td></tr>
-      <tr><td>not quite it</td><td>an unnamed delta in the last artifact</td><td>inspect it, propose three deltas, ask once</td></tr>
+      <tr><td>not quite it</td><td>an unnamed delta in the last artifact</td><td>inspect it, offer the deltas it actually shows, ask once</td></tr>
       <tr><td>refactor this</td><td>which property improves, and the bound</td><td>one property, one module, behaviour identical</td></tr>
     </tbody>
   </table>
   </div>
   <p>The rows are keyed on the axis, not on the vocabulary, so a request in another language lands on the same row — the skill's reference carries the mapping for the one language it is most often asked in, and the two traps that come with it: a dropped subject leaves the target itself as residue, and its strongest delegation ("yoshinani") is stronger than "whatever you think", not weaker.</p>
+  <p>The number row is the easiest to misread. A KPI or SLA the requester holds is asked for narrowly; measuring is execution work, so existing measurements are read and nothing expensive or side-effecting — real payments, production load — runs to finish a clarification. Likewise, grounding has a cost bound: past a short search, ask where the evidence lives rather than searching a broken index for an hour.</p>
   <p>Grounding is finished for an item when it reads as an observable state rather than an adjective: <em>card padding matches the list view at 16px</em>, not <em>the spacing is tidy</em>. If the sentence still needs an adjective to carry its meaning, the residue is real and the question is earned.</p>
 </section>
 
@@ -280,7 +283,7 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
   </div>
   <div class="callout">
     <span class="lbl">Show instead of ask</span>
-    <p>Where the variable is taste and the second candidate is cheap to build, <strong>build both</strong>. A rendered pair asks the question better than any sentence, and it fails safe: if neither lands, the reply names the delta and grounding restarts with real evidence. Not for schema shape, migrations, or anything expensive to build twice.</p>
+    <p>Where the variable is taste and the second candidate is cheap to build, <strong>build both</strong>. A rendered pair asks the question better than any sentence, and it fails safe: if neither lands, the reply names the delta and grounding restarts with real evidence. Only when both candidates are cheap, local, and free of fees, external calls and writes outside the working tree — a paid or external candidate is the work, not a question about it. Not for schema shape, migrations, or anything expensive to build twice.</p>
   </div>
 </section>
 
@@ -302,10 +305,10 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
       not touching &lt;exclusion&gt;; default &lt;item = value, source&gt;</code></pre>
   <p>Anything open, any question asked, or any irreversible work goes back to the full block. The one slot a squeezed format drops first is <strong>not touching</strong> — and that is the one holding the scope still.</p>
   <ul>
-    <li><strong>Intent</strong> is the sentence the person would sign — their vocabulary, not the agent's. It is the field agreement actually happens on; every other field exists to make that agreement checkable. A guessed intent stated plainly can be corrected in one word.</li>
+    <li><strong>Intent</strong> is the sentence the person would sign — their vocabulary, not the agent's, with what grounding resolved it to: <em>make it nice: the cards match the approved list view</em>, not the vague word copied back alone. It is the field agreement actually happens on; every other field exists to make that agreement checkable. A guessed intent stated plainly can be corrected in one word.</li>
     <li><strong>Done state</strong> must survive the adjective test: delete every evaluative word and it still says what will be true.</li>
-    <li><strong>Acceptance</strong> is a command, a comparison against a named reference, or a number against a baseline. <em>"You'll see it" is not an acceptance condition.</em></li>
-    <li><strong>Not doing</strong> is never empty — the exclusion is the cheapest scope control available.</li>
+    <li><strong>Acceptance</strong> is a command, a comparison against a named reference, or a number against a baseline. <em>"You'll see it" is not an acceptance condition.</em> A matter of taste is accepted by the named person who judges it — never by a mechanical proxy such as a character count.</li>
+    <li><strong>Not doing</strong> is never empty and never invented — the tempting adjacent thing, or, when the target already bounds the change, that bound stated plainly.</li>
   </ul>
   <h3>How agreement is taken</h3>
   <div class="scroll">
@@ -334,6 +337,8 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
     <li><strong>Dictionary translation without looking.</strong> "Modern" mapped to a fixed recipe produces exactly the generic default the word was complaining about.</li>
     <li><strong>Options that differ only in adjective.</strong> If the reader cannot picture two different artifacts, the question is unasked.</li>
     <li><strong>Budget inflation from discomfort.</strong> Vagueness felt is not blast radius.</li>
+    <li><strong>Clarifying on top of an owner.</strong> When an installed skill that owns the task already asks, asking here first doubles the interrogation.</li>
+    <li><strong>A paid prototype as a free question.</strong> Candidates that cost money or call an external service are the work, not a question about it.</li>
     <li><strong>Clarifying instead of working.</strong> A perfect instruction that arrives after the person could have had the artifact is a failure of the method, not a success.</li>
   </ul>
 </section>
@@ -351,6 +356,7 @@ make test                      # the fixture battery over check and link</code><
   <p>Nothing at the destination is ever overwritten: a real directory, or a symlink into another checkout, is refused and left alone. A CLI whose own directory does not exist is skipped rather than created.</p>
   <p>Invoke it as <code>clarify</code>, or <code>/clarify</code> in a slash-command harness — or let it trigger on its own whenever a request arrives with no achievement condition.</p>
 </section>
+</main>
 
 <footer>
   <span>clarify — a standalone agent skill</span>
