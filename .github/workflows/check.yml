@@ -1,0 +1,25 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    # macOS is in the matrix on purpose: its /tmp sits under a symlink and its sed, grep and awk
+    # are BSD, which is exactly what tools/check.sh was written to survive.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: make check
+        run: make check
+      - name: make test
+        run: make test
