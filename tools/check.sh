@@ -81,6 +81,7 @@ case_ 'markdown link to a missing file'  fail 'printf "See [gone](reference/gone
 case_ 'link example in a code fence'     ok   'printf "\n\`\`\`markdown\nSee [the notes](NOTES.md).\n\`\`\`\n" >> README.md'
 case_ 'longer fence holds a short one'   fail 'printf "\n\`\`\`\`markdown\nClose a fence with:\n\`\`\`\n\`\`\`\`\n\nSee [gone](gone.md).\n" >> README.md'
 case_ 'link example in an indented fence' ok  'printf "\n   \`\`\`markdown\n   See [the notes](NOTES.md).\n   \`\`\`\n" >> README.md'
+case_ 'CRLF fence still closes'          fail 'printf "\r\n\`\`\`sh\r\nx\r\n\`\`\`\r\n\r\nSee [g](gone.md).\r\n" >> README.md'
 case_ 'link example in a ~~~ fence'      ok   'printf "\n~~~markdown\nSee [the notes](NOTES.md).\n~~~\n" >> README.md'
 case_ 'link example in inline code'      ok   'printf "Use \`[x](notes.md)\` syntax.\n" >> README.md'
 case_ 'markdown link that resolves'      ok   'printf "See [lock](reference/lock.md).\n" >> $SKILL/SKILL.md'

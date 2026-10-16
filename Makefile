@@ -55,7 +55,7 @@ SKILLSD  := $(call tilde,$(SKILLS_DIR))
 # written. Only the targets that build destinations care; `check` and `test` never read them.
 ifneq ($(filter link unlink status,$(MAKECMDGOALS)),)
 # The test runs on the expanded value: `SKILLS_DIR=~/skills` under a spaced HOME splits too.
-$(foreach v,$(if $(strip $(SKILLS_DIR)),SKILLSD,$(if $(strip $(PROJECT)),PROJECTD,HOME CODEX_HOME)),$(if $(word 2,$($(v))),$(error $(if $(filter SKILLSD,$(v)),SKILLS_DIR,$(if $(filter PROJECTD,$(v)),PROJECT,$(v))) (as expanded) contains whitespace, which make cannot carry — use a path without spaces)))
+$(foreach v,$(if $(strip $(SKILLS_DIR)),SKILLSD,$(if $(strip $(PROJECT)),PROJECTD,HOME CODEX_HOME)),$(if $(word 2,$($(v))),$(error $(if $(filter SKILLSD,$(v)),SKILLS_DIR (as expanded),$(if $(filter PROJECTD,$(v)),PROJECT (as expanded),$(v))) contains whitespace, which make cannot carry — use a path without spaces)))
 endif
 
 ifeq ($(strip $(PROJECT)),)
@@ -200,7 +200,7 @@ check:
 					[ -f "$$r/$$ref" ] && hit=1; \
 				done; [ -n "$$hit" ] || echo "MISS $$f -> $$ref"; \
 			done; \
-			awk '{ l=$$0; k=0; while (k < 3 && substr(l,1,1) == " ") { l=substr(l,2); k++ } fe=""; if (l ~ /^```/) { match(l,/^`+/); fe=substr(l,1,RLENGTH) } else if (l ~ /^~~~/) { match(l,/^~+/); fe=substr(l,1,RLENGTH) } if (!c) { if (fe != "") { c=1; fc=substr(fe,1,1); fn=length(fe); next } print; next } if (fe != "" && substr(fe,1,1) == fc && length(fe) >= fn && substr(l,length(fe)+1) ~ /^[ \t]*$$/) c=0 }' "$$f" | sed 's/`[^`]*`//g' | grep -oE '][(][^)# ]*[.]md[)# ]' | sed 's/^](//; s/.$$//' | sort -u | while read -r ref; do \
+			awk '{ sub(/\r$$/,""); l=$$0; k=0; while (k < 3 && substr(l,1,1) == " ") { l=substr(l,2); k++ } fe=""; if (l ~ /^```/) { match(l,/^`+/); fe=substr(l,1,RLENGTH) } else if (l ~ /^~~~/) { match(l,/^~+/); fe=substr(l,1,RLENGTH) } if (!c) { if (fe != "") { c=1; fc=substr(fe,1,1); fn=length(fe); next } print; next } if (fe != "" && substr(fe,1,1) == fc && length(fe) >= fn && substr(l,length(fe)+1) ~ /^[ \t]*$$/) c=0 }' "$$f" | sed 's/`[^`]*`//g' | grep -oE '][(][^)# ]*[.]md[)# ]' | sed 's/^](//; s/.$$//' | sort -u | while read -r ref; do \
 				[ "$${ref#*://}" != "$$ref" ] && continue; \
 				[ -f "$$(dirname "$$f")/$$ref" ] || echo "MISS $$f -> $$ref"; \
 			done; \
