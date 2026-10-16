@@ -33,7 +33,7 @@
 NAME    := clarify
 # `make -f` from elsewhere passes the path to this file through MAKEFILE_LIST, which make splits on
 # whitespace — the pieces no longer name this file. Say so, rather than fail later on a half path.
-$(if $(wildcard $(lastword $(MAKEFILE_LIST))),,$(error the path to this Makefile contains whitespace; run make from inside the repository instead))
+$(if $(realpath $(lastword $(MAKEFILE_LIST))),,$(error the path to this Makefile contains whitespace; run make from inside the repository instead))
 REPO    := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 SKILL   := $(REPO)/skills/$(NAME)
 PROJECT ?=
@@ -51,7 +51,7 @@ tilde     = $(abspath $(patsubst ~,$(HOME),$(patsubst ~/%,$(HOME)/%,$(1))))
 # called `my` and report success. A destination make cannot carry is refused before anything is
 # written. Only the targets that build destinations care; `check` and `test` never read them.
 ifneq ($(filter link unlink status,$(MAKECMDGOALS)),)
-$(foreach v,PROJECT SKILLS_DIR HOME CODEX_HOME,$(if $(word 2,$($(v))),$(error $(v) contains whitespace, which make cannot carry — use a path without spaces)))
+$(foreach v,$(if $(strip $(SKILLS_DIR)),SKILLS_DIR,$(if $(strip $(PROJECT)),PROJECT,HOME CODEX_HOME)),$(if $(word 2,$($(v))),$(error $(v) contains whitespace, which make cannot carry — use a path without spaces)))
 endif
 PROJECTD := $(call tilde,$(PROJECT))
 SKILLSD  := $(call tilde,$(SKILLS_DIR))
@@ -165,9 +165,11 @@ status:
 # The prose writes both counts in words, so the check maps three..ten rather than pretending prose
 # says `5`. The published page writes them as digits in its fact strip, which the word scan cannot
 # see, so a second scan reads the digits — anchored to the phrases `N phases` and `N evaluative
-# words` rather than to any markup. Both scans read docs/index.html with its tags stripped: a page
-# that says four while the workflow has five is the drift a reader is most likely to meet and least
-# able to check. `tools/check.sh` is the battery that keeps this recipe honest — run `make test`
+# words` rather than to any markup, and skipping `N phases of …`, which counts something else. Both
+# scans read every prose file and docs/index.html with its tags stripped, lines joined so a claim
+# wrapped over a line break still counts, and a number word must start a word (`written phase` is
+# not `ten phase`). A page that says four while the workflow has five is the drift a reader is most
+# likely to meet and least able to check. `tools/check.sh` is the battery that keeps this recipe honest — run `make test`
 # after editing anything below.
 #
 # The reference sweep runs the other direction from the citation scan — cited-but-missing is one
@@ -195,7 +197,7 @@ check:
 					[ -f "$$r/$$ref" ] && hit=1; \
 				done; [ -n "$$hit" ] || echo "MISS $$f -> $$ref"; \
 			done; \
-			grep -oE '][(][^)# ]*[.]md[)# ]' "$$f" | sed 's/^](//; s/.$$//' | sort -u | while read -r ref; do \
+			awk '/^```/{c=!c;next} !c' "$$f" | sed 's/`[^`]*`//g' | grep -oE '][(][^)# ]*[.]md[)# ]' | sed 's/^](//; s/.$$//' | sort -u | while read -r ref; do \
 				[ "$${ref#*://}" != "$$ref" ] && continue; \
 				[ -f "$$(dirname "$$f")/$$ref" ] || echo "MISS $$f -> $$ref"; \
 			done; \
@@ -214,8 +216,8 @@ check:
 	p=; w=; \
 	if [ -f "$(SKILL)/SKILL.md" ]; then \
 		p=$$(awk '/^\| Phase \| Focus \|/{t=1;next} t&&/^\| *:?---/{next} t&&/^\|/{c++;next} t{exit} END{print c+0}' "$(SKILL)/SKILL.md"); \
-		pclaimed=$$(printf '%s' "$$claimsrc" | grep -oiE '(three|four|five|six|seven|eight|nine|ten)[- ]phase' | tr 'A-Z' 'a-z' | cut -d- -f1 | cut -d' ' -f1 | sort -u); \
-		pdigits=$$(printf '%s' "$$pagesrc" | grep -oE '[0-9]+ phases' | grep -oE '[0-9]+' | sort -u); \
+		pclaimed=$$(printf '%s' "$$claimsrc" | grep -oiE '(^|[^A-Za-z])(three|four|five|six|seven|eight|nine|ten)[- ]phase' | tr 'A-Z' 'a-z' | sed 's/^[^a-z]*//' | cut -d- -f1 | cut -d' ' -f1 | sort -u); \
+		pdigits=$$(printf '%s' "$$claimsrc" | grep -oE '(^|[^0-9A-Za-z.])[0-9]+ phases( of)?' | grep -v ' of$$' | grep -oE '[0-9]+' | sort -u); \
 		if [ -z "$$pclaimed$$pdigits" ]; then \
 			echo "MISS no phase-count claim found — this check has drifted from the prose" >&2; fail=1; \
 		fi; \
@@ -227,8 +229,8 @@ check:
 			[ "$$c" = "$$p" ] || { echo "MISS phase count claims $$c, SKILL.md tabulates $$p" >&2; fail=1; }; \
 		done; \
 		w=$$(awk '/^\| Word \| Axis/{t=1;next} t&&/^\| *:?---/{next} t&&/^\|/{c++;next} t{exit} END{print c+0}' "$(SKILL)/SKILL.md"); \
-		wclaimed=$$(printf '%s' "$$claimsrc" | grep -oiE '(three|four|five|six|seven|eight|nine|ten)[- ]evaluative' | tr 'A-Z' 'a-z' | cut -d- -f1 | cut -d' ' -f1 | sort -u); \
-		wdigits=$$(printf '%s' "$$pagesrc" | grep -oE '[0-9]+ evaluative words' | grep -oE '[0-9]+' | sort -u); \
+		wclaimed=$$(printf '%s' "$$claimsrc" | grep -oiE '(^|[^A-Za-z])(three|four|five|six|seven|eight|nine|ten)[- ]evaluative' | tr 'A-Z' 'a-z' | sed 's/^[^a-z]*//' | cut -d- -f1 | cut -d' ' -f1 | sort -u); \
+		wdigits=$$(printf '%s' "$$claimsrc" | grep -oE '(^|[^0-9A-Za-z.])[0-9]+ evaluative words' | grep -oE '[0-9]+' | sort -u); \
 		if [ -z "$$wclaimed$$wdigits" ]; then \
 			echo "MISS no evaluative-word-count claim found — this check has drifted from the prose" >&2; fail=1; \
 		fi; \
@@ -262,13 +264,13 @@ check:
 		pkeys=$$(awk '/<section id="words">/{t=1} t&&/<\/section>/{exit} t' docs/index.html | grep -oE '<tr><td>[^<]*</td>' | sed 's/^<tr><td>//; s/<\/td>$$//'); \
 		[ "$$pkeys" = "$$keys" ] || { echo "MISS the page's translation table does not name the rows SKILL.md defines, in the same order" >&2; fail=1; }; \
 		groles=$$(awk '/^\| Role \| Source \|/{t=1;next} t&&/^\| *:?---/{next} t&&/^\|/{print;next} t{exit}' "$(SKILL)/reference/grounding.md" \
-			| sed 's/\*\*//g; s/^| *//; s/ *|$$//; s/ *| */|/g'); \
+			| sed 's/\*\*//g; s/`//g; s/^| *//; s/ *|$$//; s/ *| */|/g'); \
 		proles=$$(awk '/<th>Role<\/th><th>Source<\/th>/{t=1;next} t&&/<\/tbody>/{exit} t&&/<tr><td>/' docs/index.html \
-			| sed 's/^ *<tr><td>//; s/<\/td><\/tr> *$$//; s/<\/td><td>/|/g'); \
+			| sed 's/^ *<tr><td>//; s/<\/td><\/tr> *$$//; s/<\/td><td>/|/g; s/<[^>]*>//g; s/&lt;/</g; s/&gt;/>/g; s/&amp;/\&/g'); \
 		[ -n "$$groles" ] && [ "$$proles" = "$$groles" ] || { echo "MISS the page's grounding table differs from reference/grounding.md" >&2; fail=1; }; \
 		lshort=$$(grep -m1 '^lock: ' "$(SKILL)/reference/lock.md" | tr -s ' '); \
 		pshort=$$(awk '/<pre><code>lock: /{t=1} t{print} t&&/<\/code><\/pre>/{exit}' docs/index.html \
-			| sed 's/<[^>]*>//g; s/&lt;/</g; s/&gt;/>/g' | tr '\n' ' ' | tr -s ' ' | sed 's/ $$//'); \
+			| sed 's/<[^>]*>//g; s/&lt;/</g; s/&gt;/>/g; s/&amp;/\&/g' | tr '\n' ' ' | tr -s ' ' | sed 's/ $$//'); \
 		[ -n "$$lshort" ] && [ "$$pshort" = "$$lshort" ] || { echo "MISS the page's short lock differs from reference/lock.md" >&2; fail=1; }; \
 	fi; \
 	if [ $$fail -eq 0 ]; then echo "self-contained: all references resolve inside $(SKILL), $$p phases, $$w evaluative words, identifiers matched across files"; else exit 1; fi

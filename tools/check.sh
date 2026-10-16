@@ -78,6 +78,8 @@ case_ 'missing ref with a folder'        fail 'printf "See \`skills/clarify/refe
 case_ 'missing ref under eval/'          fail 'printf "See \`eval/nope.md\`.\n" >> README.md'
 case_ 'skill cites a repo-only path'     fail 'printf "See \`eval/README.md\`.\n" >> $SKILL/SKILL.md'
 case_ 'markdown link to a missing file'  fail 'printf "See [gone](reference/gone.md).\n" >> $SKILL/SKILL.md'
+case_ 'link example in a code fence'     ok   'printf "\n\`\`\`markdown\nSee [the notes](NOTES.md).\n\`\`\`\n" >> README.md'
+case_ 'link example in inline code'      ok   'printf "Use \`[x](notes.md)\` syntax.\n" >> README.md'
 case_ 'markdown link that resolves'      ok   'printf "See [lock](reference/lock.md).\n" >> $SKILL/SKILL.md'
 case_ 'missing link with an anchor'      fail 'printf "See [d](missing.md#section).\n" >> README.md'
 case_ 'missing link with a title'        fail 'printf "See [d](gone.md \"Title\").\n" >> README.md'
@@ -106,6 +108,9 @@ case_ 'phase count drifts in README.md'  fail 'sed "s/[Ff]ive phases/four phases
 case_ 'phase count drifts in a ref file' fail 'printf "The four-phase workflow.\n" >> $SKILL/reference/traps.md'
 case_ 'phase count wrapped over a line'  fail 'printf "A four\nphase workflow.\n" >> README.md'
 case_ 'an unrelated digit + phases'      ok   'printf "Release takes 2 phases of review.\n" >> README.md'
+case_ 'digit count drifts in README.md'  fail 'printf "The workflow has 6 phases.\n" >> README.md'
+case_ 'digit word count drifts in prose' fail 'printf "Nine evaluative words? No: 9 evaluative words.\n" >> $SKILL/reference/traps.md'
+case_ 'number word inside another word'  ok   'printf "Each lock is written\nphase by phase.\n" >> README.md'
 case_ 'phase chain wrapped over a line'  ok   'printf "The workflow runs GATE → GROUND →\nRESIDUE → ASK → LOCK.\n" >> README.md'
 case_ 'table separator written spaced'   ok   'sed "s/^|-------|-------|----------------|------|$/| ----- | ----- | ----- | ----- |/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md
                                                grep -q "^| ----- | ----- |" $SKILL/SKILL.md'
@@ -144,6 +149,8 @@ case_ 'no page at all'                   ok   'rm docs/index.html'
 # --- the page's copies of the grounding table and the short lock drift ---------
 case_ 'page grounding cell drifts'       fail 'sed "s|<td>a still-applicable preference</td>|<td>standing preferences</td>|" docs/index.html > _ && mv _ docs/index.html'
 case_ 'grounding.md cell drifts'         fail 'sed "s/| a still-applicable preference |/| any remembered preference |/" $SKILL/reference/grounding.md > _ && mv _ $SKILL/reference/grounding.md'
+case_ 'synced edit with & and code'      ok   'sed "s/| a still-applicable preference |/| a still-applicable \`pref\` \& habit |/" $SKILL/reference/grounding.md > _ && mv _ $SKILL/reference/grounding.md
+                                               sed "s|<td>a still-applicable preference</td>|<td>a still-applicable <code>pref</code> \&amp; habit</td>|" docs/index.html > _ && mv _ docs/index.html'
 case_ 'grounding row edited everywhere'  ok   'sed "s/| a still-applicable preference |/| any remembered preference |/" $SKILL/reference/grounding.md > _ && mv _ $SKILL/reference/grounding.md
                                                sed "s|<td>a still-applicable preference</td>|<td>any remembered preference</td>|" docs/index.html > _ && mv _ docs/index.html'
 case_ 'page short lock drops a slot'     fail 'sed "s/ in &lt;target&gt;//" docs/index.html > _ && mv _ docs/index.html'
@@ -299,6 +306,15 @@ space_case_() {
 space_case_ 'PROJECT with a space refused'    PROJECT
 space_case_ 'SKILLS_DIR with a space refused' SKILLS_DIR
 
+# A spaced HOME does not build the destination when PROJECT= does, so it is not refused there.
+d=$(copy_ 'spaced home, project dest')
+mkdir -p "$d/h sp" "$d/proj"
+if ( cd "$d" && make HOME="$d/h sp" PROJECT="$d/proj" link ) >/dev/null 2>&1 && [ -L "$d/proj/.claude/skills/clarify" ]; then
+	pass=$((pass + 1)); printf 'ok     link: a spaced HOME is fine under PROJECT=\n'
+else
+	fail=$((fail + 1)); printf 'FAIL   link: a spaced HOME is fine under PROJECT=\n'
+fi
+
 # `make -f` through a path with a space cannot find itself; it must say why, not fail on a half path.
 d=$TMP/'sp ace'
 mkdir -p "$d/skills" && cp -R "$SRC/Makefile" "$SRC/README.md" "$SRC/docs" "$SRC/eval" "$d/" && cp -R "$SRC/$SKILL" "$d/skills/"
@@ -311,6 +327,15 @@ if ( cd "$d" && make check ) >/dev/null 2>&1; then
 	pass=$((pass + 1)); printf 'ok     a spaced repo path from inside still checks\n'
 else
 	fail=$((fail + 1)); printf 'FAIL   a spaced repo path from inside still checks\n'
+fi
+
+# Glob characters in the repo path are not whitespace; -f through them must still work.
+d=$TMP/'glob[1]'
+mkdir -p "$d/skills" && cp -R "$SRC/Makefile" "$SRC/README.md" "$SRC/docs" "$SRC/eval" "$d/" && cp -R "$SRC/$SKILL" "$d/skills/"
+if ( cd / && make -f "$d/Makefile" check ) >/dev/null 2>&1; then
+	pass=$((pass + 1)); printf 'ok     a repo path with [ ] via -f still checks\n'
+else
+	fail=$((fail + 1)); printf 'FAIL   a repo path with [ ] via -f still checks\n'
 fi
 
 printf '\n%s passed, %s failed\n' "$pass" "$fail"
