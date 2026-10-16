@@ -180,7 +180,8 @@ status:
 # nothing. A name cited in the skill has to resolve inside the skill directory; a root file such as
 # the README may also cite repository paths (`eval/README.md`). The README may point into the skill,
 # never the other way. Markdown link targets are resolved against the citing file's directory, and
-# are held to the same no-parent rule as code spans.
+# are held to the same no-parent rule as code spans. No `case` inside a `$$( … )` in this recipe:
+# macOS runs it with bash 3.2, whose parser closes the substitution at a case pattern's `)`.
 DOCS := *.md skills/$(NAME)/*.md skills/$(NAME)/reference/*.md
 
 check:
@@ -190,12 +191,12 @@ check:
 		for f in $(DOCS); do \
 			grep -ohE '`[A-Za-z][A-Za-z0-9._/-]*\.md`' "$$f" | tr -d '`' | sort -u | while read -r ref; do \
 				hit=; for r in "$(SKILL)" "$(SKILL)/reference" "$(REPO)"; do \
-					case "$$f" in skills/*) [ "$$r" = "$(REPO)" ] && continue;; esac; \
+					[ "$${f#skills/}" != "$$f" ] && [ "$$r" = "$(REPO)" ] && continue; \
 					[ -f "$$r/$$ref" ] && hit=1; \
 				done; [ -n "$$hit" ] || echo "MISS $$f -> $$ref"; \
 			done; \
 			grep -oE '][(][^)]*[.]md[)]' "$$f" | sed 's/^](//; s/)$$//' | sort -u | while read -r ref; do \
-				case "$$ref" in *://*) continue;; esac; \
+				[ "$${ref#*://}" != "$$ref" ] && continue; \
 				[ -f "$$(dirname "$$f")/$$ref" ] || echo "MISS $$f -> $$ref"; \
 			done; \
 		done); \
