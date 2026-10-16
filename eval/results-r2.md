@@ -81,6 +81,7 @@ were then re-read against the corrected text.
 |---|---|---|
 | C119 | `detect.md` still moved work that "costs more to redo than to do" into the irreversible column, against the budget table's Large / Reversible cell. The claim "500 local files on a branch need no approval" was only half supported. | `detect.md` now names "cannot be undone by reverting local changes" and says size alone is not a signal. closed / 0, no approval: supported. |
 | C099 | the routing list still sent work to `design-direction` only "once the ask is already clear", which implied clarifying first, against the hand-off rule the `fixed` claim rested on | the routing line now reads "choosing the visual direction": hand off once, ask nothing here; fixed is supported |
+| C103 | the C103 row above still describes the earlier owner-contract line ("say so rather than guessing"); the corrected line adds a next step | the text now says to state that the contract is unread and run Clarify normally. That is a fallback, not a claim about the best route, and the oracle ("do not assert the best route until the contract is read") neither endorses nor rejects a fallback: still-ambiguous, unchanged |
 | C095 | not re-read in round 2, although the approval text changed | reversible local work proceeds without approval, and no assent is recorded: unchanged-correct |
 | C096 | not re-read in round 2 | an explicit approval of the same resolved send is reused: unchanged-correct |
 | C097 | not re-read in round 2 | drafting delegation is not publication approval: unchanged-correct |
