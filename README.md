@@ -45,6 +45,8 @@ installed copy at once. A CLI whose own directory does not exist is **skipped, n
 
 Nothing at the destination is ever overwritten: a real directory, or a symlink into some other
 checkout, is refused and left alone, and `make unlink` removes only the links pointing at this repo.
+A destination whose path contains a space is refused before anything is written, because make
+cannot carry it intact.
 Override the destination outright with `SKILLS_DIR=<dir>` when your runtime keeps skills somewhere
 none of the three names.
 
@@ -143,7 +145,7 @@ identifiers across files as well. Five things have to agree before it exits zero
 
 | Checked | Fails when |
 |---|---|
-| Every cited `*.md` path | it does not resolve inside `skills/clarify/`, or reaches through a parent |
+| Every cited `*.md` path, in a code span or a Markdown link | a skill file cites something outside `skills/clarify/`, a root file cites something that does not exist, or a path reaches through a parent |
 | Every file in `reference/` | `SKILL.md` never names it |
 | The phase count | prose or the published page claims a number the Workflow table does not tabulate |
 | The evaluative-word count | the same, against the translation table |

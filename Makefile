@@ -31,6 +31,9 @@
 # skip on — `/` stands in — and is created in full rather than reported missing.
 
 NAME    := clarify
+# `make -f` from elsewhere passes the path to this file through MAKEFILE_LIST, which make splits on
+# whitespace — the pieces no longer name this file. Say so, rather than fail later on a half path.
+$(if $(wildcard $(lastword $(MAKEFILE_LIST))),,$(error the path to this Makefile contains whitespace; run make from inside the repository instead))
 REPO    := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 SKILL   := $(REPO)/skills/$(NAME)
 PROJECT ?=
@@ -41,8 +44,15 @@ PAGES_PORT ?= 8000
 CODEX_HOME ?= $(HOME)/.codex
 
 # A `~` reaches make quoted, so nothing ever expands it: `PROJECT=~/repo` would resolve against
-# the current directory. Expand a leading `~/` here, before anything builds a path out of it.
-tilde     = $(abspath $(patsubst ~/%,$(HOME)/%,$(1)))
+# the current directory. Expand a leading `~/`, or a bare `~`, before anything builds a path out of it.
+tilde     = $(abspath $(patsubst ~,$(HOME),$(patsubst ~/%,$(HOME)/%,$(1))))
+
+# Make splits every path below on whitespace, so `PROJECT="my proj"` would link into a sibling
+# called `my` and report success. A destination make cannot carry is refused before anything is
+# written. Only the targets that build destinations care; `check` and `test` never read them.
+ifneq ($(filter link unlink status,$(MAKECMDGOALS)),)
+$(foreach v,PROJECT SKILLS_DIR HOME CODEX_HOME,$(if $(word 2,$($(v))),$(error $(v) contains whitespace, which make cannot carry — use a path without spaces)))
+endif
 PROJECTD := $(call tilde,$(PROJECT))
 SKILLSD  := $(call tilde,$(SKILLS_DIR))
 
@@ -167,8 +177,10 @@ status:
 # quietly escapes every one of them. It spans the repo README as well as the skill, because the
 # README cites the same reference files and repeats the same counts. The shell globs it after the
 # cd, so `make -f <path>/Makefile check` from another directory reads the skill's files rather than
-# nothing. Every cited name still has to resolve inside the skill directory — the README may point
-# into it, never the other way.
+# nothing. A name cited in the skill has to resolve inside the skill directory; a root file such as
+# the README may also cite repository paths (`eval/README.md`). The README may point into the skill,
+# never the other way. Markdown link targets are resolved against the citing file's directory, and
+# are held to the same no-parent rule as code spans.
 DOCS := *.md skills/$(NAME)/*.md skills/$(NAME)/reference/*.md
 
 check:
@@ -176,8 +188,15 @@ check:
 	fail=0; \
 	misses=$$( \
 		for f in $(DOCS); do \
-			grep -ohE '`(reference/)?[A-Za-z][A-Za-z0-9._-]*\.md`' "$$f" | tr -d '`' | sort -u | while read -r ref; do \
-				[ -f "$(SKILL)/$$ref" ] || [ -f "$(SKILL)/reference/$$ref" ] || echo "MISS $$f -> $$ref"; \
+			grep -ohE '`[A-Za-z][A-Za-z0-9._/-]*\.md`' "$$f" | tr -d '`' | sort -u | while read -r ref; do \
+				hit=; for r in "$(SKILL)" "$(SKILL)/reference" "$(REPO)"; do \
+					case "$$f" in skills/*) [ "$$r" = "$(REPO)" ] && continue;; esac; \
+					[ -f "$$r/$$ref" ] && hit=1; \
+				done; [ -n "$$hit" ] || echo "MISS $$f -> $$ref"; \
+			done; \
+			grep -oE '][(][^)]*[.]md[)]' "$$f" | sed 's/^](//; s/)$$//' | sort -u | while read -r ref; do \
+				case "$$ref" in *://*) continue;; esac; \
+				[ -f "$$(dirname "$$f")/$$ref" ] || echo "MISS $$f -> $$ref"; \
 			done; \
 		done); \
 	if [ -n "$$misses" ]; then echo "$$misses" >&2; fail=1; fi; \
@@ -186,15 +205,16 @@ check:
 		b=$$(basename "$$f"); \
 		grep -q "reference/$$b" "$(SKILL)/SKILL.md" || { echo "MISS reference/$$b exists but SKILL.md never names it" >&2; fail=1; }; \
 	done; \
-	if grep -nE '`[^`]*\.\./' $(DOCS) >&2; then \
+	if { grep -noE '`[^`]*`' $(DOCS); grep -noE '][(][^)]*[)]' $(DOCS); } | grep -E '\.\./' >&2; then \
 		echo "MISS a cited path reaches through a parent directory" >&2; fail=1; \
 	fi; \
-	claimsrc=$$( cat $(DOCS); [ -f docs/index.html ] && sed 's/<[^>]*>/ /g' docs/index.html | tr -s ' ' ); \
+	pagesrc=$$( [ -f docs/index.html ] && sed 's/<[^>]*>/ /g' docs/index.html | tr '\n' ' ' | tr -s ' ' ); \
+	claimsrc=$$( { cat $(DOCS); printf ' %s' "$$pagesrc"; } | tr '\n' ' ' | tr -s ' ' ); \
 	p=; w=; \
 	if [ -f "$(SKILL)/SKILL.md" ]; then \
-		p=$$(awk '/^\| Phase \| Focus \|/{t=1;next} t&&/^\|---/{next} t&&/^\|/{c++;next} t{exit} END{print c+0}' "$(SKILL)/SKILL.md"); \
+		p=$$(awk '/^\| Phase \| Focus \|/{t=1;next} t&&/^\| *:?---/{next} t&&/^\|/{c++;next} t{exit} END{print c+0}' "$(SKILL)/SKILL.md"); \
 		pclaimed=$$(printf '%s' "$$claimsrc" | grep -oiE '(three|four|five|six|seven|eight|nine|ten)[- ]phase' | tr 'A-Z' 'a-z' | cut -d- -f1 | cut -d' ' -f1 | sort -u); \
-		pdigits=$$(printf '%s' "$$claimsrc" | grep -oE '[0-9]+ phases' | grep -oE '[0-9]+' | sort -u); \
+		pdigits=$$(printf '%s' "$$pagesrc" | grep -oE '[0-9]+ phases' | grep -oE '[0-9]+' | sort -u); \
 		if [ -z "$$pclaimed$$pdigits" ]; then \
 			echo "MISS no phase-count claim found — this check has drifted from the prose" >&2; fail=1; \
 		fi; \
@@ -205,9 +225,9 @@ check:
 		for c in $$pdigits; do \
 			[ "$$c" = "$$p" ] || { echo "MISS phase count claims $$c, SKILL.md tabulates $$p" >&2; fail=1; }; \
 		done; \
-		w=$$(awk '/^\| Word \| Axis/{t=1;next} t&&/^\|---/{next} t&&/^\|/{c++;next} t{exit} END{print c+0}' "$(SKILL)/SKILL.md"); \
+		w=$$(awk '/^\| Word \| Axis/{t=1;next} t&&/^\| *:?---/{next} t&&/^\|/{c++;next} t{exit} END{print c+0}' "$(SKILL)/SKILL.md"); \
 		wclaimed=$$(printf '%s' "$$claimsrc" | grep -oiE '(three|four|five|six|seven|eight|nine|ten)[- ]evaluative' | tr 'A-Z' 'a-z' | cut -d- -f1 | cut -d' ' -f1 | sort -u); \
-		wdigits=$$(printf '%s' "$$claimsrc" | grep -oE '[0-9]+ evaluative words' | grep -oE '[0-9]+' | sort -u); \
+		wdigits=$$(printf '%s' "$$pagesrc" | grep -oE '[0-9]+ evaluative words' | grep -oE '[0-9]+' | sort -u); \
 		if [ -z "$$wclaimed$$wdigits" ]; then \
 			echo "MISS no evaluative-word-count claim found — this check has drifted from the prose" >&2; fail=1; \
 		fi; \
@@ -219,17 +239,19 @@ check:
 			[ "$$c" = "$$w" ] || { echo "MISS evaluative-word count claims $$c, SKILL.md tabulates $$w" >&2; fail=1; }; \
 		done; \
 	fi; \
-	nm=$$(awk -F'[: ]+' '/^name:/{print $$2; exit}' "$(SKILL)/SKILL.md"); \
+	nm=$$(awk -F'[: ]+' '/^name:/{gsub(/["\047]/,"",$$2); print $$2; exit}' "$(SKILL)/SKILL.md"); \
 	[ "$$nm" = "$(NAME)" ] || { echo "MISS frontmatter name is '$$nm', the skill directory is '$(NAME)'" >&2; fail=1; }; \
 	chain=$$(grep -m1 -oE '^`[A-Z]+( → [A-Z]+)+`' "$(SKILL)/SKILL.md" | tr -d '`' | sed 's/ → /@/g' | tr '@' '\n'); \
-	rows=$$(awk '/^\| Phase \| Focus \|/{t=1;next} t&&/^\|---/{next} t&&/^\|/{split($$0,a,"|"); k=a[2]; gsub(/[` ]/,"",k); print k; next} t{exit}' "$(SKILL)/SKILL.md"); \
+	rows=$$(awk '/^\| Phase \| Focus \|/{t=1;next} t&&/^\| *:?---/{next} t&&/^\|/{split($$0,a,"|"); k=a[2]; gsub(/[` ]/,"",k); print k; next} t{exit}' "$(SKILL)/SKILL.md"); \
 	if [ -z "$$chain" ] || [ "$$chain" != "$$rows" ]; then \
 		echo "MISS the phase chain and the Workflow table do not name the same phases in the same order" >&2; fail=1; \
 	fi; \
-	keys=$$(awk '/^\| Word \| Axis/{t=1;next} t&&/^\|---/{next} t&&/^\|/{split($$0,a,"|"); k=a[2]; gsub(/^ +| +$$/,"",k); print k; next} t{exit}' "$(SKILL)/SKILL.md"); \
-	dangling=$$(awk '/^\| Japanese \| Lands on the row \|/{t=1;next} t&&/^\|---/{next} t&&/^\|/{split($$0,a,"|"); v=a[3]; gsub(/^ +| +$$/,"",v); print v; next} t{exit}' "$(SKILL)/reference/detect.md" \
+	keys=$$(awk '/^\| Word \| Axis/{t=1;next} t&&/^\| *:?---/{next} t&&/^\|/{split($$0,a,"|"); k=a[2]; gsub(/^ +| +$$/,"",k); print k; next} t{exit}' "$(SKILL)/SKILL.md"); \
+	dangling=$$(awk '/^\| Japanese \| Lands on the row \|/{t=1;next} t&&/^\| *:?---/{next} t&&/^\|/{split($$0,a,"|"); v=a[3]; gsub(/^ +| +$$/,"",v); print v; next} t{exit}' "$(SKILL)/reference/detect.md" \
 		| while read -r v; do printf '%s\n' "$$keys" | grep -qxF "$$v" || echo "MISS detect.md maps a trigger onto row '$$v', which the translation table does not define"; done); \
 	if [ -n "$$dangling" ]; then echo "$$dangling" >&2; fail=1; fi; \
+	ntrig=$$(awk '/^\| Japanese \| Lands on the row \|/{t=1;next} t&&/^\| *:?---/{next} t&&/^\|/{c++;next} t{exit} END{print c+0}' "$(SKILL)/reference/detect.md"); \
+	[ "$$ntrig" -gt 0 ] || { echo "MISS no trigger table found in reference/detect.md — this check has drifted from the file" >&2; fail=1; }; \
 	stray=$$(printf '%s\n' "$$claimsrc" | grep -oE '[A-Z]+( → [A-Z]+)+' | sort -u | while read -r c; do \
 		cs=$$(printf '%s\n' "$$c" | sed 's/ → /@/g' | tr '@' '\n'); \
 		printf '%s\n' "$$cs" | grep -qxF "$$chain" || continue; \
@@ -238,7 +260,7 @@ check:
 	if [ -f docs/index.html ]; then \
 		pkeys=$$(awk '/<section id="words">/{t=1} t&&/<\/section>/{exit} t' docs/index.html | grep -oE '<tr><td>[^<]*</td>' | sed 's/^<tr><td>//; s/<\/td>$$//'); \
 		[ "$$pkeys" = "$$keys" ] || { echo "MISS the page's translation table does not name the rows SKILL.md defines, in the same order" >&2; fail=1; }; \
-		groles=$$(awk '/^\| Role \| Source \|/{t=1;next} t&&/^\|---/{next} t&&/^\|/{print;next} t{exit}' "$(SKILL)/reference/grounding.md" \
+		groles=$$(awk '/^\| Role \| Source \|/{t=1;next} t&&/^\| *:?---/{next} t&&/^\|/{print;next} t{exit}' "$(SKILL)/reference/grounding.md" \
 			| sed 's/\*\*//g; s/^| *//; s/ *|$$//; s/ *| */|/g'); \
 		proles=$$(awk '/<th>Role<\/th><th>Source<\/th>/{t=1;next} t&&/<\/tbody>/{exit} t&&/<tr><td>/' docs/index.html \
 			| sed 's/^ *<tr><td>//; s/<\/td><\/tr> *$$//; s/<\/td><td>/|/g'); \

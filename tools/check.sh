@@ -12,6 +12,10 @@
 
 set -u
 
+# The caller's make variables must not reach the cases: `PROJECT=… make test` would otherwise send
+# every link case into that real repository, and `make test AGENT=codex` arrives through MAKEFLAGS.
+unset PROJECT AGENT SKILLS_DIR CODEX_HOME MAKEFLAGS MFLAGS MAKELEVEL
+
 SRC=$(cd "$(dirname "$0")/.." && pwd)
 SKILL=skills/clarify
 TMP=$(mktemp -d "${TMPDIR:-/tmp}/clarify-check.XXXXXX") || exit 1
@@ -20,12 +24,15 @@ trap 'rm -rf "$TMP"' EXIT
 pass=0
 fail=0
 
+# A count claim may wrap over a line break; mutations that remove one map newlines to this byte first.
+NL=$(printf '\001')
+
 # copy_ <name> — a throwaway copy of the tree, printed as a path. Every case mutates its own.
 copy_() {
 	d=$TMP/$(printf '%s' "$1" | tr -c 'a-zA-Z0-9' '_')
 	rm -rf "$d"
 	mkdir -p "$d/skills" || exit 1
-	cp -R "$SRC/Makefile" "$SRC/README.md" "$SRC/docs" "$d/" || exit 1
+	cp -R "$SRC/Makefile" "$SRC/README.md" "$SRC/docs" "$SRC/eval" "$d/" || exit 1
 	cp -R "$SRC/$SKILL" "$d/skills/" || exit 1
 	printf '%s' "$d"
 }
@@ -67,6 +74,11 @@ case_ 'clean tree, foreign cwd via -f'   ok   '' foreign
 case_ 'missing ref, lower-case name'     fail 'printf "See \`nonexistent-file.md\`.\n" >> $SKILL/SKILL.md'
 case_ 'missing ref, capitalised name'    fail 'printf "See \`NOTREAL.md\`.\n" >> $SKILL/reference/detect.md'
 case_ 'missing ref, new root .md'        fail 'printf "See \`nonexistent-file.md\`.\n" > CONTRIBUTING.md'
+case_ 'missing ref with a folder'        fail 'printf "See \`skills/clarify/reference/gone.md\`.\n" >> README.md'
+case_ 'missing ref under eval/'          fail 'printf "See \`eval/nope.md\`.\n" >> README.md'
+case_ 'skill cites a repo-only path'     fail 'printf "See \`eval/README.md\`.\n" >> $SKILL/SKILL.md'
+case_ 'markdown link to a missing file'  fail 'printf "See [gone](reference/gone.md).\n" >> $SKILL/SKILL.md'
+case_ 'markdown link that resolves'      ok   'printf "See [lock](reference/lock.md).\n" >> $SKILL/SKILL.md'
 case_ 'missing ref, new .md in skill'    fail 'printf "See \`nonexistent-file.md\`.\n" > $SKILL/NOTES.md'
 case_ 'reference dir deleted, foreign'   fail 'rm -rf $SKILL/reference' foreign
 case_ 'detect.md deleted, foreign cwd'   fail 'rm $SKILL/reference/detect.md' foreign
@@ -80,6 +92,8 @@ case_ 'orphan named by SKILL.md only'    ok   'printf "# Orphan\n" > $SKILL/refe
 case_ 'parent ref in SKILL.md'           fail 'printf "See \`../escape.md\`.\n" >> $SKILL/SKILL.md'
 case_ 'parent ref in README.md'          fail 'printf "See \`../escape.md\`.\n" >> README.md'
 case_ 'parent ref in new root .md'       fail 'printf "See \`../escape.md\`.\n" > CONTRIBUTING.md'
+case_ 'parent ref in a markdown link'    fail 'printf "See [x](../escape.md).\n" >> README.md'
+case_ 'cd ../ outside any code span'     ok   'printf "Run \`make link\`, then cd ../ and repeat.\n" >> README.md'
 
 # --- a relative path in an install example is not a parent reference ----------
 case_ 'relative PROJECT= in a fence'     ok   'printf "\n\`\`\`sh\nmake link PROJECT=../sibling-repo\n\`\`\`\n" >> README.md'
@@ -87,9 +101,14 @@ case_ 'relative PROJECT= in a fence'     ok   'printf "\n\`\`\`sh\nmake link PRO
 # --- the phase count drifts from the Workflow table ---------------------------
 case_ 'phase count drifts in README.md'  fail 'sed "s/[Ff]ive phases/four phases/g" README.md > _ && mv _ README.md'
 case_ 'phase count drifts in a ref file' fail 'printf "The four-phase workflow.\n" >> $SKILL/reference/traps.md'
+case_ 'phase count wrapped over a line'  fail 'printf "A four\nphase workflow.\n" >> README.md'
+case_ 'an unrelated digit + phases'      ok   'printf "Release takes 2 phases of review.\n" >> README.md'
+case_ 'phase chain wrapped over a line'  ok   'printf "The workflow runs GATE → GROUND →\nRESIDUE → ASK → LOCK.\n" >> README.md'
+case_ 'table separator written spaced'   ok   'sed "s/^|-------|-------|----------------|------|$/| ----- | ----- | ----- | ----- |/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md
+                                               grep -q "^| ----- | ----- |" $SKILL/SKILL.md'
 case_ 'phase digit drifts in the page'   fail 'sed "s|>5</b><span>phases|>6</b><span>phases|" docs/index.html > _ && mv _ docs/index.html'
 case_ 'phase prose drifts from check'    fail 'for f in $SKILL/SKILL.md README.md docs/index.html; do
-                                                 sed -E "s/[Ff]ive[- ]phase/the phase/g; s|>5</b><span>phases|>5</b><span>steps|" "$f" > _ && mv _ "$f"
+                                                 tr "\n" "\001" < "$f" | sed -E "s/[Ff]ive([- $NL])phase/the\1phase/g; s|>5</b><span>phases|>5</b><span>steps|" | tr "\001" "\n" > _ && mv _ "$f"
                                                done'
 case_ 'a 6th phase row, prose stale'     fail 'awk "{print} /^\\| \`LOCK\` \\|/{print \"| \`FAKE\` | Does it? | Never | — |\"}" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
 
@@ -98,14 +117,16 @@ case_ 'word count drifts in SKILL.md'    fail 'sed "s/Eight evaluative words/Sev
 case_ 'word count drifts in a ref file'  fail 'printf "The seven evaluative words.\n" >> $SKILL/reference/grounding.md'
 case_ 'word digit drifts in the page'    fail 'sed "s|>8</b><span>evaluative words|>9</b><span>evaluative words|" docs/index.html > _ && mv _ docs/index.html'
 case_ 'word prose drifts from check'     fail 'for f in $SKILL/SKILL.md README.md docs/index.html; do
-                                                 sed -E "s/[Ee]ight[- ]evaluative/the evaluative/g; s|>8</b><span>evaluative words|>8</b><span>trigger words|" "$f" > _ && mv _ "$f"
+                                                 tr "\n" "\001" < "$f" | sed -E "s/[Ee]ight([- $NL])evaluative/the\1evaluative/g; s|>8</b><span>evaluative words|>8</b><span>trigger words|" | tr "\001" "\n" > _ && mv _ "$f"
                                                done'
 case_ 'a 9th word row, prose stale'      fail 'awk "{print} /^\\| refactor this \\|/{print \"| tidy it up \\| Something \\| Something |\"}" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
 
 # --- an identifier drifts between the files that share it ----------------------
 #
 # A rename keeps every count intact, so these are exactly the edits the count scans cannot see.
-case_ 'row key renamed, detect stale'    fail 'sed "s/refactor this |/tidy this up |/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
+case_ 'row key renamed, detect stale'    fail 'sed "s/refactor this |/tidy this up |/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md
+                                               sed "s|<td>refactor this</td>|<td>tidy this up</td>|" docs/index.html > _ && mv _ docs/index.html'
+case_ 'trigger table header renamed'     fail 'sed "s/| Japanese | Lands on the row |/| 日本語 | Lands on the row |/; s/| リファクタして | refactor this |/| リファクタして | tidy it up |/" $SKILL/reference/detect.md > _ && mv _ $SKILL/reference/detect.md'
 case_ 'row key renamed, page stale'      fail 'for f in $SKILL/SKILL.md $SKILL/reference/detect.md; do
                                                  sed "s/refactor this |/tidy this up |/" "$f" > _ && mv _ "$f"
                                                done'
@@ -134,6 +155,7 @@ case_ 'phase chain drifts in README.md'  fail 'sed "s/RESIDUE → ASK/ASK → RE
 case_ 'an unrelated arrow chain'         ok   'printf "TDD runs RED → GREEN → REFACTOR.\n" >> README.md'
 case_ 'phase chain drifts in the page'   fail 'sed "s/GROUND → RESIDUE/GROUND → EXTRA → RESIDUE/" docs/index.html > _ && mv _ docs/index.html'
 case_ 'the phase chain is deleted'       fail 'grep -v "GATE → GROUND" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
+case_ 'frontmatter name quoted'          ok   'sed "s/^name: clarify$/name: \"clarify\"/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
 case_ 'frontmatter name drifts'          fail 'sed "s/^name: clarify/name: clarify-v2/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
 
 # --- a table that is not the counted one must not inflate either count ---------
@@ -244,12 +266,49 @@ link_case_ 'a dangling link is refused'  fail 'link' \
 	'[ -L "$H/.codex/skills/clarify" ]' \
 	'mkdir -p "$H/.codex/skills" && ln -s "$d/gone" "$H/.codex/skills/clarify"'
 
+link_case_ 'SKILLS_DIR=~ is expanded'    ok   'link SKILLS_DIR=~' \
+	'[ "$(readlink "$H/clarify")" = "$S" ] && [ ! -e "./~" ]'
+
 link_case_ 'unlink removes only ours'    ok   'unlink' \
 	'[ ! -e "$H/.claude/skills/clarify" ] &&
 	 [ "$(readlink "$H/.gemini/antigravity-cli/skills/clarify")" = /elsewhere ]' \
 	'make HOME="$H" CODEX_HOME="$H/.codex" link >/dev/null 2>&1
 	 mkdir -p "$H/.gemini/antigravity-cli/skills" && ln -s /elsewhere "$H/.gemini/antigravity-cli/skills/clarify"'
 
+
+# --- a destination make cannot carry is refused, not mis-linked ------------------
+#
+# Make splits paths on whitespace, so these cannot go through link_case_'s word-split arguments.
+space_case_() {
+	name=$1
+	var=$2
+	d=$(copy_ "space_$name")
+	H=$d/home
+	mkdir -p "$H/.claude" "$H/my" "$H/my proj" || exit 1
+	( cd "$d" && make HOME="$H" "$var=$H/my proj" link ) >/dev/null 2>&1
+	got=$?
+	if [ "$got" -ne 0 ] && [ -z "$(find "$H" -type l)" ]; then
+		pass=$((pass + 1)); printf 'ok     link: %s\n' "$name"
+	else
+		fail=$((fail + 1)); printf 'FAIL   link: %s (exit %s, links: %s)\n' "$name" "$got" "$(find "$H" -type l)"
+	fi
+}
+space_case_ 'PROJECT with a space refused'    PROJECT
+space_case_ 'SKILLS_DIR with a space refused' SKILLS_DIR
+
+# `make -f` through a path with a space cannot find itself; it must say why, not fail on a half path.
+d=$TMP/'sp ace'
+mkdir -p "$d/skills" && cp -R "$SRC/Makefile" "$SRC/README.md" "$SRC/docs" "$SRC/eval" "$d/" && cp -R "$SRC/$SKILL" "$d/skills/"
+if ( cd / && make -f "$d/Makefile" check ) 2>&1 | grep -q 'contains whitespace'; then
+	pass=$((pass + 1)); printf 'ok     a spaced repo path via -f is explained\n'
+else
+	fail=$((fail + 1)); printf 'FAIL   a spaced repo path via -f is explained\n'
+fi
+if ( cd "$d" && make check ) >/dev/null 2>&1; then
+	pass=$((pass + 1)); printf 'ok     a spaced repo path from inside still checks\n'
+else
+	fail=$((fail + 1)); printf 'FAIL   a spaced repo path from inside still checks\n'
+fi
 
 printf '\n%s passed, %s failed\n' "$pass" "$fail"
 [ "$fail" -eq 0 ]
