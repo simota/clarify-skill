@@ -116,6 +116,14 @@ case_ 'row key renamed everywhere'       ok   'for f in $SKILL/SKILL.md $SKILL/r
 case_ 'page drops a translation row'     fail 'grep -v "<tr><td>easy to use</td>" docs/index.html > _ && mv _ docs/index.html'
 case_ 'page reorders translation rows'   fail 'awk "/<tr><td>easy to use<\/td>/{h=\$0; next} {print} /<tr><td>refactor this<\/td>/{print h}" docs/index.html > _ && mv _ docs/index.html'
 case_ 'no page at all'                   ok   'rm docs/index.html'
+
+# --- the page's copies of the grounding table and the short lock drift ---------
+case_ 'page grounding cell drifts'       fail 'sed "s|<td>a still-applicable preference</td>|<td>standing preferences</td>|" docs/index.html > _ && mv _ docs/index.html'
+case_ 'grounding.md cell drifts'         fail 'sed "s/| a still-applicable preference |/| any remembered preference |/" $SKILL/reference/grounding.md > _ && mv _ $SKILL/reference/grounding.md'
+case_ 'grounding row edited everywhere'  ok   'sed "s/| a still-applicable preference |/| any remembered preference |/" $SKILL/reference/grounding.md > _ && mv _ $SKILL/reference/grounding.md
+                                               sed "s|<td>a still-applicable preference</td>|<td>any remembered preference</td>|" docs/index.html > _ && mv _ docs/index.html'
+case_ 'page short lock drops a slot'     fail 'sed "s/ in &lt;target&gt;//" docs/index.html > _ && mv _ docs/index.html'
+case_ 'lock.md short lock drifts'        fail 'sed "s/; not touching <exclusion>//" $SKILL/reference/lock.md > _ && mv _ $SKILL/reference/lock.md'
 case_ 'phase renamed in the chain only'  fail 'sed "s/RESIDUE -> ASK/LEFTOVER -> ASK/; s/RESIDUE → ASK/LEFTOVER → ASK/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
 case_ 'phase renamed in the table only'  fail 'sed "s/RESIDUE[^ ]* | What genuinely/LEFTOVER | What genuinely/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
 case_ 'phase renamed in SKILL.md only'   fail 'sed "s/RESIDUE/LEFTOVER/g" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'

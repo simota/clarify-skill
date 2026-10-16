@@ -139,7 +139,7 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
   <div class="facts">
     <div class="fact"><b>5</b><span>phases</span></div>
     <div class="fact"><b>8</b><span>evaluative words</span></div>
-    <div class="fact"><b>0–3</b><span>questions per round</span></div>
+    <div class="fact"><b>3 + 1</b><span>questions at most, round 1 + 2</span></div>
     <div class="fact"><b>2</b><span>rounds, hard maximum</span></div>
   </div>
 </header>
@@ -199,13 +199,13 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
   <h3>Grounding: what each source can settle</h3>
   <div class="scroll">
   <table>
-    <thead><tr><th>Role</th><th>Source</th><th>Settles</th><th>Cannot settle</th></tr></thead>
+    <thead><tr><th>Role</th><th>Source</th><th>Can settle</th><th>Cannot settle</th></tr></thead>
     <tbody>
-      <tr><td>Baseline</td><td>The artifact itself, when it exists</td><td>which defects actually exist, and their size</td><td>preference among defensible options</td></tr>
-      <tr><td>Comparison</td><td>The accepted neighbour</td><td>house style, naming, density, structure</td><td>anything the neighbour is itself wrong about</td></tr>
-      <tr><td>Constraint</td><td>Applicable declared convention</td><td>the bar the repo already holds itself to</td><td>a bar the repo has never set</td></tr>
-      <tr><td>Preference</td><td>Current request and conversation</td><td>what was already ruled out</td><td>anything not yet discussed</td></tr>
-      <tr><td>Fallback</td><td>Durable memory</td><td>standing preferences across sessions</td><td>whether the preference still holds</td></tr>
+      <tr><td>Baseline evidence</td><td>Artifact</td><td>what exists and what is defective</td><td>the desired state merely by existing</td></tr>
+      <tr><td>Comparison evidence</td><td>Neighbour / accepted output</td><td>a matching precedent within applicable constraints</td><td>defects or superseded patterns</td></tr>
+      <tr><td>Normative constraint</td><td>Declared convention / specification</td><td>requirements within its stated scope</td><td>choices the rule leaves open</td></tr>
+      <tr><td>Requester preference</td><td>Current request / conversation</td><td>intended changes, corrections, choices already made</td><td>unstated facts or permission</td></tr>
+      <tr><td>Fallback preference</td><td>Durable memory / past feedback</td><td>a still-applicable preference</td><td>overriding current corrections or binding rules</td></tr>
     </tbody>
   </table>
   </div>
@@ -297,13 +297,13 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
 - Done state:     &lt;observable state after the change, no adjectives&gt;
 - Acceptance:     &lt;who runs or looks at what, and what result settles it&gt;
 - Not doing:      &lt;at least one — the tempting adjacent thing&gt;
-- Defaults taken: &lt;item — value — source&gt;
+- Defaults taken: &lt;item — value — basis&gt;
 - Open:           &lt;unresolved item and the work it gates&gt; | none</code></pre>
   <p>The field set is the contract; the labels are not. The block is rendered in whatever language the run is speaking — the same seven fields, in the same order.</p>
   <h3>Short form — the zero-question path</h3>
-  <p>When the budget was zero and nothing is open, the full block costs more than the change it governs. The same fields collapse into one line, every slot still present:</p>
-<pre><code>lock: &lt;intent&gt; → &lt;done state&gt;; checked by &lt;acceptance&gt;;
-      not touching &lt;exclusion&gt;; default &lt;item = value, source&gt;</code></pre>
+  <p>When the budget was zero, nothing is open and the work is reversible, the full block costs more than the change it governs. The same fields collapse into one line, every slot still present:</p>
+<pre><code>lock: &lt;intent&gt; → &lt;done state&gt; in &lt;target&gt;; checked by &lt;acceptance&gt;;
+      not touching &lt;exclusion&gt;; defaults &lt;item = value, source; …&gt;</code></pre>
   <p>Anything open, any question asked, or any irreversible work goes back to the full block. The one slot a squeezed format drops first is <strong>not touching</strong> — and that is the one holding the scope still.</p>
   <ul>
     <li><strong>Intent</strong> is the sentence the person would sign — their vocabulary, not the agent's, with what grounding resolved it to: <em>make it nice: the cards match the approved list view</em>, not the vague word copied back alone. It is the field agreement actually happens on; every other field exists to make that agreement checkable. A guessed intent stated plainly can be corrected in one word.</li>
@@ -333,11 +333,11 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
   <h2><span class="num">07</span> Traps</h2>
   <p class="dek">Over-clarifying is the dominant failure, not under-clarifying.</p>
   <ul>
-    <li><strong>Interrogating a delegation.</strong> "Whatever you think" is an answer. The response is the shortest correct artifact plus a line saying what was assumed.</li>
+    <li><strong>Interrogating a delegation.</strong> "Whatever you think" is an answer, not a question. The response uses the delegated discretion — the shortest correct artifact plus a line saying what was assumed — not invented facts or ungranted permission.</li>
     <li><strong>Clarifying the whole sentence when one word is vague.</strong> The specific parts of a request are load-bearing; re-asking them reads as not having listened.</li>
     <li><strong>Dictionary translation without looking.</strong> "Modern" mapped to a fixed recipe produces exactly the generic default the word was complaining about.</li>
     <li><strong>Options that differ only in adjective.</strong> If the reader cannot picture two different artifacts, the question is unasked.</li>
-    <li><strong>Budget inflation from discomfort.</strong> Vagueness felt is not blast radius.</li>
+    <li><strong>Budget inflation from discomfort.</strong> Vagueness felt is not blast radius. Required user-only inputs cannot be discarded to satisfy a preference budget either.</li>
     <li><strong>Clarifying on top of an owner.</strong> When an installed skill that owns the task already asks, asking here first doubles the interrogation.</li>
     <li><strong>A paid prototype as a free question.</strong> Candidates that cost money or call an external service are the work, not a question about it.</li>
     <li><strong>Clarifying instead of working.</strong> A perfect instruction that arrives after the person could have had the artifact is a failure of the method, not a success.</li>

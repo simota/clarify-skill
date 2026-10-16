@@ -141,8 +141,9 @@ status:
 # every other phase chain the prose or the page prints against that same chain (a chain that names
 # none of the skill's phases, such as RED → GREEN → REFACTOR, is someone else's), every row
 # `reference/detect.md` maps a non-English trigger onto against the translation table it claims
-# to key into, and the published page's copy of that table against its rows. Those are the edits
-# that pass a count check and still break a reader.
+# to key into, the published page's copy of that table against its rows, and the page's copies of
+# the grounding table and the one-line short lock against `reference/grounding.md` and
+# `reference/lock.md`. Those are the edits that pass a count check and still break a reader.
 #
 #   phases              the workflow a reader is told to run, counted as the rows of the Workflow
 #                       table in SKILL.md — a sixth phase nobody renamed the prose for is a phase
@@ -237,6 +238,15 @@ check:
 	if [ -f docs/index.html ]; then \
 		pkeys=$$(awk '/<section id="words">/{t=1} t&&/<\/section>/{exit} t' docs/index.html | grep -oE '<tr><td>[^<]*</td>' | sed 's/^<tr><td>//; s/<\/td>$$//'); \
 		[ "$$pkeys" = "$$keys" ] || { echo "MISS the page's translation table does not name the rows SKILL.md defines, in the same order" >&2; fail=1; }; \
+		groles=$$(awk '/^\| Role \| Source \|/{t=1;next} t&&/^\|---/{next} t&&/^\|/{print;next} t{exit}' "$(SKILL)/reference/grounding.md" \
+			| sed 's/\*\*//g; s/^| *//; s/ *|$$//; s/ *| */|/g'); \
+		proles=$$(awk '/<th>Role<\/th><th>Source<\/th>/{t=1;next} t&&/<\/tbody>/{exit} t&&/<tr><td>/' docs/index.html \
+			| sed 's/^ *<tr><td>//; s/<\/td><\/tr> *$$//; s/<\/td><td>/|/g'); \
+		[ -n "$$groles" ] && [ "$$proles" = "$$groles" ] || { echo "MISS the page's grounding table differs from reference/grounding.md" >&2; fail=1; }; \
+		lshort=$$(grep -m1 '^lock: ' "$(SKILL)/reference/lock.md" | tr -s ' '); \
+		pshort=$$(awk '/<pre><code>lock: /{t=1} t{print} t&&/<\/code><\/pre>/{exit}' docs/index.html \
+			| sed 's/<[^>]*>//g; s/&lt;/</g; s/&gt;/>/g' | tr '\n' ' ' | tr -s ' ' | sed 's/ $$//'); \
+		[ -n "$$lshort" ] && [ "$$pshort" = "$$lshort" ] || { echo "MISS the page's short lock differs from reference/lock.md" >&2; fail=1; }; \
 	fi; \
 	if [ $$fail -eq 0 ]; then echo "self-contained: all references resolve inside $(SKILL), $$p phases, $$w evaluative words, identifiers matched across files"; else exit 1; fi
 
