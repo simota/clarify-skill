@@ -52,7 +52,8 @@ under the stated interpretation; it is not a measured success rate.
 
 ## Totals over the 128 cases
 
-- `still-ambiguous`: 23 → 2 (C045, C103).
+- `still-ambiguous`: 23 → 2 (C045, C103). Cases not listed in this file carry their round-1
+  judgment; they were not re-read in round 2 (see the addendum for the ones re-read since).
 - No control listed above gained a question or lost an approval requirement.
 
 ## New risks this round introduces
@@ -68,3 +69,21 @@ under the stated interpretation; it is not a measured success rate.
 
 Real CLI selection, actual question counts, latency, user corrections and redo rates remain
 unmeasured, as they were after round 1.
+
+## Addendum — consistency review after round 2
+
+An independent read of the merged round-2 text (a separate reviewer agent, not the edit's author)
+found that two `fixed` / `unchanged-correct` claims above leaned on text that still contradicted
+itself. The text was corrected without changing any case oracle or prediction; the affected cases
+were then re-read against the corrected text.
+
+| ID | defect in the round-2 text | after the correction |
+|---|---|---|
+| C119 | `detect.md` still moved work that "costs more to redo than to do" into the irreversible column, against the budget table's Large / Reversible cell. The claim "500 local files on a branch need no approval" was only half supported. | `detect.md` now names "cannot be undone by reverting local changes" and says size alone is not a signal. closed / 0, no approval: supported. |
+| C099 | the routing list still sent work to `design-direction` only "once the ask is already clear", which implied clarifying first, against the hand-off rule the `fixed` claim rested on | the routing line now reads "choosing the visual direction": hand off once, ask nothing here; fixed is supported |
+| C095 | not re-read in round 2, although the approval text changed | reversible local work proceeds without approval, and no assent is recorded: unchanged-correct |
+| C096 | not re-read in round 2 | an explicit approval of the same resolved send is reused: unchanged-correct |
+| C097 | not re-read in round 2 | drafting delegation is not publication approval: unchanged-correct |
+| C098 | not re-read in round 2; also, the output table sent every zero-question run to the one-line short lock, while `lock.md` sends irreversible work to the full block | the output table now limits the short lock to reversible runs, so the zero-question publish shows the full block and waits for an explicit yes: unchanged-correct |
+
+The totals above stand: `still-ambiguous` remains 2 (C045, C103).
