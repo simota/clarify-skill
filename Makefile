@@ -47,14 +47,16 @@ CODEX_HOME ?= $(HOME)/.codex
 # the current directory. Expand a leading `~/`, or a bare `~`, before anything builds a path out of it.
 tilde     = $(abspath $(patsubst ~,$(HOME),$(patsubst ~/%,$(HOME)/%,$(1))))
 
+PROJECTD := $(call tilde,$(PROJECT))
+SKILLSD  := $(call tilde,$(SKILLS_DIR))
+
 # Make splits every path below on whitespace, so `PROJECT="my proj"` would link into a sibling
 # called `my` and report success. A destination make cannot carry is refused before anything is
 # written. Only the targets that build destinations care; `check` and `test` never read them.
 ifneq ($(filter link unlink status,$(MAKECMDGOALS)),)
-$(foreach v,$(if $(strip $(SKILLS_DIR)),SKILLS_DIR,$(if $(strip $(PROJECT)),PROJECT,HOME CODEX_HOME)),$(if $(word 2,$($(v))),$(error $(v) contains whitespace, which make cannot carry — use a path without spaces)))
+# The test runs on the expanded value: `SKILLS_DIR=~/skills` under a spaced HOME splits too.
+$(foreach v,$(if $(strip $(SKILLS_DIR)),SKILLSD,$(if $(strip $(PROJECT)),PROJECTD,HOME CODEX_HOME)),$(if $(word 2,$($(v))),$(error $(if $(filter SKILLSD,$(v)),SKILLS_DIR,$(if $(filter PROJECTD,$(v)),PROJECT,$(v))) (as expanded) contains whitespace, which make cannot carry — use a path without spaces)))
 endif
-PROJECTD := $(call tilde,$(PROJECT))
-SKILLSD  := $(call tilde,$(SKILLS_DIR))
 
 ifeq ($(strip $(PROJECT)),)
 tgt_claude := $(HOME)/.claude|$(HOME)/.claude/skills
@@ -165,7 +167,8 @@ status:
 # The prose writes both counts in words, so the check maps three..ten rather than pretending prose
 # says `5`. The published page writes them as digits in its fact strip, which the word scan cannot
 # see, so a second scan reads the digits — anchored to the phrases `N phases` and `N evaluative
-# words` rather than to any markup, and skipping `N phases of …`, which counts something else. Both
+# words` rather than to any markup. Any such phrase counts, even one about something else: a check
+# that skips a phrasing can skip a real claim silently, and a false match only asks for a reword. Both
 # scans read every prose file and docs/index.html with its tags stripped, lines joined so a claim
 # wrapped over a line break still counts, and a number word must start a word (`written phase` is
 # not `ten phase`). A page that says four while the workflow has five is the drift a reader is most
@@ -197,7 +200,7 @@ check:
 					[ -f "$$r/$$ref" ] && hit=1; \
 				done; [ -n "$$hit" ] || echo "MISS $$f -> $$ref"; \
 			done; \
-			awk '/^```/{c=!c;next} !c' "$$f" | sed 's/`[^`]*`//g' | grep -oE '][(][^)# ]*[.]md[)# ]' | sed 's/^](//; s/.$$//' | sort -u | while read -r ref; do \
+			awk '{ l=$$0; k=0; while (k < 3 && substr(l,1,1) == " ") { l=substr(l,2); k++ } fe=""; if (l ~ /^```/) { match(l,/^`+/); fe=substr(l,1,RLENGTH) } else if (l ~ /^~~~/) { match(l,/^~+/); fe=substr(l,1,RLENGTH) } if (!c) { if (fe != "") { c=1; fc=substr(fe,1,1); fn=length(fe); next } print; next } if (fe != "" && substr(fe,1,1) == fc && length(fe) >= fn && substr(l,length(fe)+1) ~ /^[ \t]*$$/) c=0 }' "$$f" | sed 's/`[^`]*`//g' | grep -oE '][(][^)# ]*[.]md[)# ]' | sed 's/^](//; s/.$$//' | sort -u | while read -r ref; do \
 				[ "$${ref#*://}" != "$$ref" ] && continue; \
 				[ -f "$$(dirname "$$f")/$$ref" ] || echo "MISS $$f -> $$ref"; \
 			done; \
@@ -217,7 +220,7 @@ check:
 	if [ -f "$(SKILL)/SKILL.md" ]; then \
 		p=$$(awk '/^\| Phase \| Focus \|/{t=1;next} t&&/^\| *:?---/{next} t&&/^\|/{c++;next} t{exit} END{print c+0}' "$(SKILL)/SKILL.md"); \
 		pclaimed=$$(printf '%s' "$$claimsrc" | grep -oiE '(^|[^A-Za-z])(three|four|five|six|seven|eight|nine|ten)[- ]phase' | tr 'A-Z' 'a-z' | sed 's/^[^a-z]*//' | cut -d- -f1 | cut -d' ' -f1 | sort -u); \
-		pdigits=$$(printf '%s' "$$claimsrc" | grep -oE '(^|[^0-9A-Za-z.])[0-9]+ phases( of)?' | grep -v ' of$$' | grep -oE '[0-9]+' | sort -u); \
+		pdigits=$$(printf '%s' "$$claimsrc" | grep -oE '(^|[^0-9A-Za-z.])[0-9]+ phases' | grep -oE '[0-9]+' | sort -u); \
 		if [ -z "$$pclaimed$$pdigits" ]; then \
 			echo "MISS no phase-count claim found — this check has drifted from the prose" >&2; fail=1; \
 		fi; \

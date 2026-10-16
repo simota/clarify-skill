@@ -79,6 +79,9 @@ case_ 'missing ref under eval/'          fail 'printf "See \`eval/nope.md\`.\n" 
 case_ 'skill cites a repo-only path'     fail 'printf "See \`eval/README.md\`.\n" >> $SKILL/SKILL.md'
 case_ 'markdown link to a missing file'  fail 'printf "See [gone](reference/gone.md).\n" >> $SKILL/SKILL.md'
 case_ 'link example in a code fence'     ok   'printf "\n\`\`\`markdown\nSee [the notes](NOTES.md).\n\`\`\`\n" >> README.md'
+case_ 'longer fence holds a short one'   fail 'printf "\n\`\`\`\`markdown\nClose a fence with:\n\`\`\`\n\`\`\`\`\n\nSee [gone](gone.md).\n" >> README.md'
+case_ 'link example in an indented fence' ok  'printf "\n   \`\`\`markdown\n   See [the notes](NOTES.md).\n   \`\`\`\n" >> README.md'
+case_ 'link example in a ~~~ fence'      ok   'printf "\n~~~markdown\nSee [the notes](NOTES.md).\n~~~\n" >> README.md'
 case_ 'link example in inline code'      ok   'printf "Use \`[x](notes.md)\` syntax.\n" >> README.md'
 case_ 'markdown link that resolves'      ok   'printf "See [lock](reference/lock.md).\n" >> $SKILL/SKILL.md'
 case_ 'missing link with an anchor'      fail 'printf "See [d](missing.md#section).\n" >> README.md'
@@ -107,7 +110,11 @@ case_ 'relative PROJECT= in a fence'     ok   'printf "\n\`\`\`sh\nmake link PRO
 case_ 'phase count drifts in README.md'  fail 'sed "s/[Ff]ive phases/four phases/g" README.md > _ && mv _ README.md'
 case_ 'phase count drifts in a ref file' fail 'printf "The four-phase workflow.\n" >> $SKILL/reference/traps.md'
 case_ 'phase count wrapped over a line'  fail 'printf "A four\nphase workflow.\n" >> README.md'
-case_ 'an unrelated digit + phases'      ok   'printf "Release takes 2 phases of review.\n" >> README.md'
+# Any "N phases" counts as a claim, even about something else: skipping a phrasing (an earlier
+# "N phases of" exemption) also skipped real claims, silently. Rewording is the cheaper failure.
+case_ 'any digit + phases is a claim'    fail 'printf "Release takes 2 phases of review.\n" >> README.md'
+case_ 'digit claim before "of…" word'    fail 'printf "Clarify runs 6 phases offering one question each.\n" >> README.md'
+case_ 'page digit claim "N phases of"'   fail 'sed "s|>Five phases</a>|>The 6 phases of clarify</a>|" docs/index.html > _ && mv _ docs/index.html'
 case_ 'digit count drifts in README.md'  fail 'printf "The workflow has 6 phases.\n" >> README.md'
 case_ 'digit word count drifts in prose' fail 'printf "Nine evaluative words? No: 9 evaluative words.\n" >> $SKILL/reference/traps.md'
 case_ 'number word inside another word'  ok   'printf "Each lock is written\nphase by phase.\n" >> README.md'
@@ -305,6 +312,15 @@ space_case_() {
 }
 space_case_ 'PROJECT with a space refused'    PROJECT
 space_case_ 'SKILLS_DIR with a space refused' SKILLS_DIR
+
+# `~` expands to HOME, so a spaced HOME reaches the destination through it and must be refused.
+d=$(copy_ 'tilde into spaced home')
+mkdir -p "$d/h sp" "$d/h"
+if ! ( cd "$d" && make HOME="$d/h sp" SKILLS_DIR='~/skills' link ) >/dev/null 2>&1 && [ -z "$(find "$d/h" "$d/h sp" -type l)" ]; then
+	pass=$((pass + 1)); printf 'ok     link: SKILLS_DIR=~/… under a spaced HOME refused\n'
+else
+	fail=$((fail + 1)); printf 'FAIL   link: SKILLS_DIR=~/… under a spaced HOME refused\n'
+fi
 
 # A spaced HOME does not build the destination when PROJECT= does, so it is not refused there.
 d=$(copy_ 'spaced home, project dest')
