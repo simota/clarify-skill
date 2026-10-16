@@ -86,6 +86,8 @@ case_ 'link example in a ~~~ fence'      ok   'printf "\n~~~markdown\nSee [the n
 case_ 'link example in inline code'      ok   'printf "Use \`[x](notes.md)\` syntax.\n" >> README.md'
 case_ 'markdown link that resolves'      ok   'printf "See [lock](reference/lock.md).\n" >> $SKILL/SKILL.md'
 case_ 'missing link with an anchor'      fail 'printf "See [d](missing.md#section).\n" >> README.md'
+case_ 'missing link in angle brackets'   fail 'printf "See [d](<missing.md>).\n" >> README.md'
+case_ 'angle-bracket link that resolves' ok   'printf "See [lock](<reference/lock.md>).\n" >> $SKILL/SKILL.md'
 case_ 'missing link with a title'        fail 'printf "See [d](gone.md \"Title\").\n" >> README.md'
 case_ 'anchored link that resolves'      ok   'printf "See [lock](reference/lock.md#field-rules \"Rules\").\n" >> $SKILL/SKILL.md'
 case_ 'missing ref, new .md in skill'    fail 'printf "See \`nonexistent-file.md\`.\n" > $SKILL/NOTES.md'
@@ -102,6 +104,7 @@ case_ 'parent ref in SKILL.md'           fail 'printf "See \`../escape.md\`.\n" 
 case_ 'parent ref in README.md'          fail 'printf "See \`../escape.md\`.\n" >> README.md'
 case_ 'parent ref in new root .md'       fail 'printf "See \`../escape.md\`.\n" > CONTRIBUTING.md'
 case_ 'parent ref in a markdown link'    fail 'printf "See [x](../escape.md).\n" >> README.md'
+case_ 'a URL may contain ../'            ok   'printf "See [ext](https://example.com/a/../b) and \`https://example.com/c/../d\`.\n" >> README.md'
 case_ 'cd ../ outside any code span'     ok   'printf "Run \`make link\`, then cd ../ and repeat.\n" >> README.md'
 
 # --- a relative path in an install example is not a parent reference ----------

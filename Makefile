@@ -200,7 +200,7 @@ check:
 					[ -f "$$r/$$ref" ] && hit=1; \
 				done; [ -n "$$hit" ] || echo "MISS $$f -> $$ref"; \
 			done; \
-			awk '{ sub(/\r$$/,""); l=$$0; k=0; while (k < 3 && substr(l,1,1) == " ") { l=substr(l,2); k++ } fe=""; if (l ~ /^```/) { match(l,/^`+/); fe=substr(l,1,RLENGTH) } else if (l ~ /^~~~/) { match(l,/^~+/); fe=substr(l,1,RLENGTH) } if (!c) { if (fe != "") { c=1; fc=substr(fe,1,1); fn=length(fe); next } print; next } if (fe != "" && substr(fe,1,1) == fc && length(fe) >= fn && substr(l,length(fe)+1) ~ /^[ \t]*$$/) c=0 }' "$$f" | sed 's/`[^`]*`//g' | grep -oE '][(][^)# ]*[.]md[)# ]' | sed 's/^](//; s/.$$//' | sort -u | while read -r ref; do \
+			awk '{ sub(/\r$$/,""); l=$$0; k=0; while (k < 3 && substr(l,1,1) == " ") { l=substr(l,2); k++ } fe=""; if (l ~ /^```/) { match(l,/^`+/); fe=substr(l,1,RLENGTH) } else if (l ~ /^~~~/) { match(l,/^~+/); fe=substr(l,1,RLENGTH) } if (!c) { if (fe != "") { c=1; fc=substr(fe,1,1); fn=length(fe); next } print; next } if (fe != "" && substr(fe,1,1) == fc && length(fe) >= fn && substr(l,length(fe)+1) ~ /^[ \t]*$$/) c=0 }' "$$f" | sed 's/`[^`]*`//g' | grep -oE '][(]<?[^)# <>]*[.]md[)# >]' | sed 's/^](<*//; s/.$$//' | sort -u | while read -r ref; do \
 				[ "$${ref#*://}" != "$$ref" ] && continue; \
 				[ -f "$$(dirname "$$f")/$$ref" ] || echo "MISS $$f -> $$ref"; \
 			done; \
@@ -211,7 +211,7 @@ check:
 		b=$$(basename "$$f"); \
 		grep -q "reference/$$b" "$(SKILL)/SKILL.md" || { echo "MISS reference/$$b exists but SKILL.md never names it" >&2; fail=1; }; \
 	done; \
-	if { grep -noE '`[^`]*`' $(DOCS); grep -noE '][(][^)]*[)]' $(DOCS); } | grep -E '\.\./' >&2; then \
+	if { grep -noE '`[^`]*`' $(DOCS); grep -noE '][(][^)]*[)]' $(DOCS); } | grep -v '://' | grep -E '\.\./' >&2; then \
 		echo "MISS a cited path reaches through a parent directory" >&2; fail=1; \
 	fi; \
 	pagesrc=$$( [ -f docs/index.html ] && sed 's/<[^>]*>/ /g' docs/index.html | tr '\n' ' ' | tr -s ' ' ); \
