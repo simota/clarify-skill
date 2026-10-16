@@ -79,6 +79,9 @@ case_ 'missing ref under eval/'          fail 'printf "See \`eval/nope.md\`.\n" 
 case_ 'skill cites a repo-only path'     fail 'printf "See \`eval/README.md\`.\n" >> $SKILL/SKILL.md'
 case_ 'markdown link to a missing file'  fail 'printf "See [gone](reference/gone.md).\n" >> $SKILL/SKILL.md'
 case_ 'markdown link that resolves'      ok   'printf "See [lock](reference/lock.md).\n" >> $SKILL/SKILL.md'
+case_ 'missing link with an anchor'      fail 'printf "See [d](missing.md#section).\n" >> README.md'
+case_ 'missing link with a title'        fail 'printf "See [d](gone.md \"Title\").\n" >> README.md'
+case_ 'anchored link that resolves'      ok   'printf "See [lock](reference/lock.md#field-rules \"Rules\").\n" >> $SKILL/SKILL.md'
 case_ 'missing ref, new .md in skill'    fail 'printf "See \`nonexistent-file.md\`.\n" > $SKILL/NOTES.md'
 case_ 'reference dir deleted, foreign'   fail 'rm -rf $SKILL/reference' foreign
 case_ 'detect.md deleted, foreign cwd'   fail 'rm $SKILL/reference/detect.md' foreign

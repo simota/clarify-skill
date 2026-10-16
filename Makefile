@@ -195,7 +195,7 @@ check:
 					[ -f "$$r/$$ref" ] && hit=1; \
 				done; [ -n "$$hit" ] || echo "MISS $$f -> $$ref"; \
 			done; \
-			grep -oE '][(][^)]*[.]md[)]' "$$f" | sed 's/^](//; s/)$$//' | sort -u | while read -r ref; do \
+			grep -oE '][(][^)# ]*[.]md[)# ]' "$$f" | sed 's/^](//; s/.$$//' | sort -u | while read -r ref; do \
 				[ "$${ref#*://}" != "$$ref" ] && continue; \
 				[ -f "$$(dirname "$$f")/$$ref" ] || echo "MISS $$f -> $$ref"; \
 			done; \
