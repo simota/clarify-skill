@@ -45,6 +45,8 @@ installed copy at once. A CLI whose own directory does not exist is **skipped, n
 
 Nothing at the destination is ever overwritten: a real directory, or a symlink into some other
 checkout, is refused and left alone, and `make unlink` removes only the links pointing at this repo.
+A destination whose path contains a space is refused before anything is written, because make
+cannot carry it intact.
 Override the destination outright with `SKILLS_DIR=<dir>` when your runtime keeps skills somewhere
 none of the three names.
 
@@ -66,14 +68,14 @@ Or let it trigger on its own whenever a request arrives with no achievement cond
 2. **GROUND** — inspect an existing artifact or available specification, distinguishing baseline evidence from applicable conventions and current corrections.
 3. **RESIDUE** — keep only the open items where different answers produce materially different deliverables *and* no default is defensible.
 4. **ASK** — real preference choices or narrow missing-input questions; recommend only with evidence. Zero questions is normal; two rounds is the maximum, not permission to default an unanswered fact. Two rendered candidates replace a taste question only when both are cheap, local and side-effect-free.
-5. **LOCK** — the intent in the requester's own words with what grounding resolved them to, a target, an observable done-state, an acceptance check a third party can run (or, for taste, the named person's sign-off), an exclusion or a stated bound, and every default taken silently — stated back so that disagreeing costs one word. On the zero-question path the same fields collapse into a single line. Cheap reversible work needs no approval; this is not observed assent. Irreversible or outward-facing work waits for explicit approval of the resolved action.
+5. **LOCK** — the intent in the requester's own words with what grounding resolved them to, a target, an observable done-state, an acceptance check a third party can run (or, for taste, the named person's sign-off), an exclusion or a stated bound, and every default taken silently — stated back so that disagreeing costs one word. On the zero-question reversible path the same fields collapse into a single line. Cheap reversible work needs no approval; this is not observed assent. Irreversible or outward-facing work waits for explicit approval of the resolved action.
 
 ### What a run emits
 
 | Run | Output |
 |---|---|
 | The gate stayed shut | called by name: one line, `clarify: gate shut — <the done-sentence>`; selected on its own: nothing |
-| Zero questions, nothing open | one line naming what was read, then the **short lock** — one line carrying every field |
+| Zero questions, nothing open, reversible | one line naming what was read, then the **short lock** — one line carrying every field |
 | Everything else | that same line, the questions, then the full lock block |
 
 Then the work proceeds under the lock and reports as itself. "Nothing else" bounds the
@@ -143,11 +145,11 @@ identifiers across files as well. Five things have to agree before it exits zero
 
 | Checked | Fails when |
 |---|---|
-| Every cited `*.md` path | it does not resolve inside `skills/clarify/`, or reaches through a parent |
+| Every cited `*.md` path, in a code span or a Markdown link | a skill file cites something outside `skills/clarify/`, a root file cites something that does not exist, or a path reaches through a parent |
 | Every file in `reference/` | `SKILL.md` never names it |
 | The phase count | prose or the published page claims a number the Workflow table does not tabulate |
 | The evaluative-word count | the same, against the translation table |
-| Identifiers | the frontmatter `name` leaves the directory name behind · the phase chain and the Workflow table name different phases · the README or the page prints a different chain · `reference/detect.md` maps a trigger onto a row the translation table no longer defines · the page's copy of the translation table names different rows, or the same rows in another order |
+| Identifiers | the frontmatter `name` leaves the directory name behind · the phase chain and the Workflow table name different phases · the README or the page prints a different chain · `reference/detect.md` maps a trigger onto a row the translation table no longer defines · the page's copy of the translation table names different rows, or the same rows in another order · the page's grounding table or one-line short lock differs from `reference/grounding.md` or `reference/lock.md` |
 
 `make test` mutates a throwaway copy of the tree once per rule and asserts the exit status —
 a check that has quietly stopped catching something fails there instead of passing silently.

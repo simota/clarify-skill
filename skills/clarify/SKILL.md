@@ -44,13 +44,14 @@ Route elsewhere when the task is primarily:
 - the problem itself is unstated and a plan is wanted: `planning-frame`
 - a whole feature needs a frozen spec with acceptance criteria: `spec-dialogue`
 - judging whether a rendered UI actually looks good: `design-review` / `design-critique`
-- deciding the visual direction once the ask is already clear: `design-direction`
+- choosing the visual direction: `design-direction`
 
 These names are suggestions, not dependencies. **When an installed skill that owns the task
 already runs its own clarifying dialogue or diagnosis, hand off once and ask nothing here** —
 two skills asking the same preference is over-clarifying twice. When the named skill is not
 installed, do the task normally; never stall on, or ask the person to install, a skill that is
-absent. When the owner's contract cannot be read, say so rather than guessing which one asks.
+absent. When the owner's contract cannot be read, say so and run Clarify normally; hand off
+only to an owner whose contract is known to ask.
 
 **The gate — run it first.** Two sentences must be writable without inventing anything:
 *what the person is actually after* (intent, in their terms), and *who looks at what, and
@@ -208,14 +209,14 @@ The clarification emits one of three shapes, and nothing else:
 | Run | Output |
 |---|---|
 | The gate stayed shut | invoked by name: one line, `clarify: gate shut — <the done-sentence>`; selected on its own: nothing |
-| Zero questions, nothing open | one line naming what was read, then the **short lock** — one line carrying every field (`reference/lock.md`) |
+| Zero questions, nothing open, reversible | one line naming what was read, then the **short lock** — one line carrying every field (`reference/lock.md`) |
 | Everything else | that same line, then the necessary questions (`reference/questions.md`), then the full `LOCK` block |
 
 **The work then proceeds under the lock and reports as itself.** "Nothing else" bounds this
 output, not the run: on the zero-question path the artifact is what the person is waiting for,
 and withholding it to stay inside a format would be the failure this skill is named against.
 
-Ceiling: a zero-question run is two lines before the work starts. Never echo the request
+Ceiling: a zero-question reversible run is two lines before the work starts. Never echo the request
 back as a preamble — the Intent line is the one restatement, and it earns its place by
 carrying what grounding resolved. Output follows the language of the conversation;
 identifiers, paths, and commands stay as they are in the source.

@@ -12,7 +12,7 @@ Read at `LOCK`.
 - Done state: <observable state after the change, no adjectives>
 - Acceptance: <who runs or looks at what, and what result settles it>
 - Not doing: <at least one — the tempting adjacent thing>
-- Defaults taken: <item — value — basis (artifact / neighbour / convention / prior turn / delegated discretion)>
+- Defaults taken: <item — value — basis (artifact / neighbour / convention / prior turn / memory / delegated discretion)>
 - Open: <unresolved item and the work it gates> | none
 ```
 
@@ -22,7 +22,7 @@ On the zero-question path the full block costs more than the change it governs, 
 fields collapse into **one line** — every slot still present, none waived:
 
 ```
-lock: <intent> → <done state>; checked by <acceptance>; not touching <exclusion>; default <item = value, source>
+lock: <intent> → <done state> in <target>; checked by <acceptance>; not touching <exclusion>; defaults <item = value, source; …>
 ```
 
 Use it when the budget was zero **and** `Open` is empty. Anything open, any question asked, or

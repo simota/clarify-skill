@@ -53,7 +53,10 @@ budget table — it does not license a longer interrogation:
 - writes outside the working tree, publishes, sends, or deploys
 - deletes or overwrites something not yet read
 - touches shared config, schema, or a public interface
-- costs more to redo than to do
+- cannot be undone by reverting local changes
+
+Size is not on this list. Work that is wide or slow to redo but stays local and reversible
+belongs in the **Large / Reversible** cell: it proceeds under the lock without approval.
 
 ## The same words in another language
 
