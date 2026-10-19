@@ -40,8 +40,10 @@ Three CLIs read a `SKILL.md` with YAML frontmatter, and each looks somewhere dif
 | `agy` | `~/.gemini/antigravity-cli/skills` | `<repo>/.agents/skills` |
 
 `make link` symlinks `skills/clarify/` into each of them, so a `git pull` here updates every
-installed copy at once. A CLI whose own directory does not exist is **skipped, not created** — and
-`codex` and `agy` share `.agents/skills` inside a project, so one link there serves both.
+installed copy at once. For a home-directory install, a CLI whose own directory does not exist is
+**skipped, not created**. With `PROJECT=` only the repository has to exist — its `.claude/` and
+`.agents/` are created — and `codex` and `agy` share `.agents/skills` there, so one link serves
+both. A `SKILLS_DIR=` directory is created in full.
 
 Nothing at the destination is ever overwritten: a real directory, or a symlink into some other
 checkout, is refused and left alone, and `make unlink` removes only the links pointing at this repo.
@@ -106,7 +108,7 @@ context, and the questions are spent only on what reading cannot settle.
 | `skills/clarify/` | The skill itself — the directory `make link` symlinks |
 | `docs/index.html` | The published site — one self-contained page explaining the workflow |
 | `eval/` | The 128 synthetic adversarial cases, the predictions frozen before each policy edit, and the judgments after it — contract witnesses, not rollouts (`eval/README.md`) |
-| `.github/workflows/check.yml` | Runs `make check` and `make test` on every push and pull request, on Linux and macOS |
+| `.github/workflows/check.yml` | Runs `make check` and `make test` on every pull request and on pushes to `main`, on Linux and macOS |
 
 Paths below are relative to `skills/clarify/`.
 
@@ -145,7 +147,7 @@ identifiers across files as well. Five things have to agree before it exits zero
 
 | Checked | Fails when |
 |---|---|
-| Every cited `*.md` path, in a code span or a Markdown link | a skill file cites something outside `skills/clarify/`, a root file cites something that does not exist, or a path reaches through a parent |
+| Every `*.md` path cited in a root `*.md` file or in the skill, in a code span or a Markdown link (`eval/` and `docs/` are not scanned) | a skill file cites something outside `skills/clarify/`, a root file cites something that does not exist, or a path reaches through a parent |
 | Every file in `reference/` | `SKILL.md` never names it |
 | The phase count | prose or the published page claims a number the Workflow table does not tabulate |
 | The evaluative-word count | the same, against the translation table |
