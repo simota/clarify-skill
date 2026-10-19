@@ -318,7 +318,7 @@ footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--l
     <tbody>
       <tr><td>Reversible, small</td><td>State the lock and proceed without requiring approval; do not record assent that was not observed</td></tr>
       <tr><td>Reversible, large</td><td>State the lock and proceed only on settled work; a pause supplies no approval</td></tr>
-      <tr><td>Irreversible / outward-facing</td><td>Explicit approval of the resolved action, even when publication is reversible; an existing scoped approval suffices</td></tr>
+      <tr><td>Irreversible / outward-facing</td><td>Explicit approval of the resolved action, even when publication is reversible; an existing scoped approval suffices, but an instruction given before the recipient, range or final content was known is not one</td></tr>
     </tbody>
   </table>
   </div>
@@ -354,7 +354,7 @@ make status                    # where is it linked?
 make unlink                    # remove only the links pointing at this repo
 make check                     # references, counts and identifiers agree
 make test                      # the fixture battery over check and link</code></pre>
-  <p>Nothing at the destination is ever overwritten: a real directory, or a symlink into another checkout, is refused and left alone. A CLI whose own directory does not exist is skipped rather than created.</p>
+  <p>Nothing at the destination is ever overwritten: a real directory, or a symlink into another checkout, is refused and left alone. For a home-directory install, a CLI whose own directory does not exist is skipped rather than created; with <code>PROJECT=</code> only the repository has to exist, and its <code>.claude/</code> and <code>.agents/</code> are created.</p>
   <p>Invoke it as <code>clarify</code>, or <code>/clarify</code> in a slash-command harness — or let it trigger on its own whenever a request arrives with no achievement condition.</p>
 </section>
 </main>

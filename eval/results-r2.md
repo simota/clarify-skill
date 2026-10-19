@@ -88,3 +88,19 @@ were then re-read against the corrected text.
 | C098 | not re-read in round 2; also, the output table sent every zero-question run to the one-line short lock, while `lock.md` sends irreversible work to the full block | the output table now limits the short lock to reversible runs, so the zero-question publish shows the full block and waits for an explicit yes: unchanged-correct |
 
 The totals above stand: `still-ambiguous` remains 2 (C045, C103).
+
+## Addendum 2 — walkthrough review after PR #3
+
+A further independent reader walked 22 cases through the merged text (`9f367a6`). Two rules
+still allowed outcomes the oracles exclude; the text was corrected and the cases re-read. No
+oracle or prediction changed.
+
+| ID | defect in the merged text | after the correction |
+|---|---|---|
+| C072, C073 | "an existing explicit approval covering that action suffices" did not say whether 「送って」/「消して」, given before the recipient or range existed, covers the resolved action; under the specific-shortcut convention it could, removing the separate approval the oracle requires | SKILL.md and lock.md now say an instruction given before the action was resolved is not approval of it: get the recipient or range, show it, then a separate yes. fixed is supported |
+| C098 | same gap: 「そのまま公開して」 preceded the warmed final text | approval now follows the final content being shown: unchanged-correct is supported |
+| C031 | `detect.md` keeps the gate shut for safely delegated small work, while SKILL.md said "ordinary delegated small work still takes the short lock", two output shapes for one case | the short lock now applies to delegated work whose gate opened; when delegation settles both gate sentences the gate stays shut. closed / 0 is supported |
+
+The reader's third point, that C033 and C035 would be shown as two built candidates rather than
+asked, was not taken: two rendered candidates are a neutral closed choice and count as one
+decision under `methodology.md`, the same as the oracle. The totals stand.

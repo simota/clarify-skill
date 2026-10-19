@@ -18,7 +18,11 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      # v5 runs on Node 24; v4's Node 20 runtime is deprecated on the runners. The job only reads the
+      # tree, so the token is not left in .git/config for the steps that follow.
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - name: make check
         run: make check
       - name: make test

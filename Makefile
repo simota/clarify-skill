@@ -128,7 +128,7 @@ unlink:
 	@for t in $(QTARGETS); do \
 		dir=$${t##*|}; d="$$dir/$(NAME)"; \
 		if $(OURS); then rm "$$d"; echo "unlinked $$d"; \
-		elif [ -L "$$d" ]; then echo "skip     $$d — links to $$(readlink "$$d"), not this repo"; \
+		elif [ -L "$$d" ]; then echo "skip     $$d — links to $$(readlink "$$d"), not this skill"; \
 		elif [ -e "$$d" ]; then echo "skip     $$d — not a symlink, leaving it alone"; \
 		else echo "none     $$d"; fi; \
 	done
