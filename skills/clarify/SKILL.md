@@ -83,8 +83,10 @@ already clear.
   No third clarification round: hold unresolved dependent work, never invent its answer.
 - Before irreversible or outward-facing work, resolve required selection and factual
   inputs, then obtain explicit approval of the resolved action. Clarification and approval
-  are distinct; an existing explicit approval covering that action suffices. Size alone is
-  not a trigger: wide work that stays local and reversible proceeds under the lock.
+  are distinct; an existing explicit approval covering that action suffices. An instruction
+  given before the action was resolved ("send it", with no recipient yet) is not approval of
+  it: approval follows the resolved recipient, range or final content being shown. Size alone
+  is not a trigger: wide work that stays local and reversible proceeds under the lock.
 - Where taste is the variable, **build two candidates instead of asking** — but only when
   both are cheap, local, and free of fees, external calls and writes outside the working
   tree. Otherwise ask the concrete preference; building candidates is work, not a free question.
@@ -147,8 +149,9 @@ already clear.
 
 These are maxima, not quotas. Approval is separate from clarification and cannot replace
 selection of a recipient, destructive target or other missing fact. A known essential input
-may use round 2; reaching the cap leaves it unresolved, not defaulted. Ordinary delegated
-small work still takes the **short lock** (`reference/lock.md`) and proceeds without questions.
+may use round 2; reaching the cap leaves it unresolved, not defaulted. Delegated small work
+whose gate opened still takes the **short lock** (`reference/lock.md`) and proceeds without
+questions; when delegation alone settles both gate sentences, the gate stays shut instead.
 
 ## Translating the Evaluative Word
 

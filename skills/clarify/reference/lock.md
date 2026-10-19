@@ -75,7 +75,7 @@ on silence inferred before a person could respond:
 |---|---|
 | Reversible, small | State the lock and proceed without requiring approval. Do not record assent that was not observed. |
 | Reversible, large | State the lock; proceed only on settled work. A pause or same-turn execution supplies no approval. |
-| Irreversible / outward-facing | Explicit approval of the resolved action, even when publication is reversible. Reuse an existing approval only if it covers that action. |
+| Irreversible / outward-facing | Explicit approval of the resolved action, even when publication is reversible. Reuse an existing approval only if it covers that action; an instruction given before the recipient, range or final content was resolved does not. |
 
 **A correction to Intent is the cheapest possible outcome, not a failure of the run.** Re-ground
 from the corrected sentence and re-lock; do not reopen the fields that were never in dispute.
