@@ -168,6 +168,10 @@ case_ 'grounding row edited everywhere'  ok   'sed "s/| a still-applicable prefe
                                                sed "s|<td>a still-applicable preference</td>|<td>any remembered preference</td>|" docs/index.html > _ && mv _ docs/index.html'
 case_ 'page short lock drops a slot'     fail 'sed "s/ in &lt;target&gt;//" docs/index.html > _ && mv _ docs/index.html'
 case_ 'lock.md short lock drifts'        fail 'sed "s/; not touching <exclusion>//" $SKILL/reference/lock.md > _ && mv _ $SKILL/reference/lock.md'
+case_ 'page lock block drops a field'    fail 'grep -v "^- Not doing:" docs/index.html > _ && mv _ docs/index.html'
+case_ 'lock.md block field drifts'       fail 'sed "s/^- Target: <file/- Target: <a file/" $SKILL/reference/lock.md > _ && mv _ $SKILL/reference/lock.md'
+case_ 'lock block edited everywhere'     ok   'sed "s/^- Target: <file/- Target: <a file/" $SKILL/reference/lock.md > _ && mv _ $SKILL/reference/lock.md
+                                               sed "s/^- Target: *&lt;file/- Target:         \&lt;a file/" docs/index.html > _ && mv _ docs/index.html'
 case_ 'phase renamed in the chain only'  fail 'sed "s/RESIDUE -> ASK/LEFTOVER -> ASK/; s/RESIDUE → ASK/LEFTOVER → ASK/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
 case_ 'phase renamed in the table only'  fail 'sed "s/RESIDUE[^ ]* | What genuinely/LEFTOVER | What genuinely/" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
 case_ 'phase renamed in SKILL.md only'   fail 'sed "s/RESIDUE/LEFTOVER/g" $SKILL/SKILL.md > _ && mv _ $SKILL/SKILL.md'
