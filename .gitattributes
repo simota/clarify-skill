@@ -1,0 +1,4 @@
+# Check out with LF everywhere, whatever core.autocrlf says. `make check` compares lines across
+# files and parses frontmatter, and tools/check.sh is a shell script: a CRLF checkout (Windows'
+# default) fails the check on text that is identical, and the agent CLIs read the frontmatter too.
+* text=auto eol=lf
