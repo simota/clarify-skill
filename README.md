@@ -151,7 +151,7 @@ identifiers across files as well. Five things have to agree before it exits zero
 | Every file in `reference/` | `SKILL.md` never names it |
 | The phase count | prose or the published page claims a number the Workflow table does not tabulate |
 | The evaluative-word count | the same, against the translation table |
-| Identifiers | the frontmatter `name` leaves the directory name behind · the phase chain and the Workflow table name different phases · the README or the page prints a different chain · `reference/detect.md` maps a trigger onto a row the translation table no longer defines · the page's copy of the translation table names different rows, or the same rows in another order · the page's grounding table or one-line short lock differs from `reference/grounding.md` or `reference/lock.md` |
+| Identifiers | the frontmatter `name` leaves the directory name behind · the phase chain and the Workflow table name different phases · the README or the page prints a different chain · `reference/detect.md` maps a trigger onto a row the translation table no longer defines · the page's copy of the translation table names different rows, or the same rows in another order · the page's grounding table, lock block or one-line short lock differs from `reference/grounding.md` or `reference/lock.md` |
 
 `make test` mutates a throwaway copy of the tree once per rule and asserts the exit status —
 a check that has quietly stopped catching something fails there instead of passing silently.

@@ -7,11 +7,11 @@ Read at `LOCK`.
 
 ```markdown
 ## Locked instruction
-- Intent: <one sentence, in the requester's own words: what they are actually after>
+- Intent: <one sentence: the requester's own words, with what grounding resolved them to>
 - Target: <file / screen / range — where the change stops>
 - Done state: <observable state after the change, no adjectives>
 - Acceptance: <who runs or looks at what, and what result settles it>
-- Not doing: <at least one — the tempting adjacent thing>
+- Not doing: <the tempting adjacent thing, or the bound the target already sets — never empty>
 - Defaults taken: <item — value — basis (artifact / neighbour / convention / prior turn / memory / delegated discretion)>
 - Open: <unresolved item and the work it gates> | none
 ```
