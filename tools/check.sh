@@ -120,6 +120,8 @@ case_ 'any digit + phases is a claim'    fail 'printf "Release takes 2 phases of
 case_ 'digit claim before "of…" word'    fail 'printf "Clarify runs 6 phases offering one question each.\n" >> README.md'
 case_ 'page digit claim "N phases of"'   fail 'sed "s|>Five phases</a>|>The 6 phases of clarify</a>|" docs/index.html > _ && mv _ docs/index.html'
 case_ 'digit count drifts in README.md'  fail 'printf "The workflow has 6 phases.\n" >> README.md'
+case_ 'hyphenated digit phase claim'     fail 'printf "The 6-phase workflow.\n" >> README.md'
+case_ 'hyphenated digit word claim'      fail 'printf "The 9-evaluative-word table.\n" >> README.md'
 case_ 'digit word count drifts in prose' fail 'printf "Nine evaluative words? No: 9 evaluative words.\n" >> $SKILL/reference/traps.md'
 case_ 'number word inside another word'  ok   'printf "Each lock is written\nphase by phase.\n" >> README.md'
 case_ 'phase chain wrapped over a line'  ok   'printf "The workflow runs GATE → GROUND →\nRESIDUE → ASK → LOCK.\n" >> README.md'
