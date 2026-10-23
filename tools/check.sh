@@ -122,6 +122,8 @@ case_ 'page digit claim "N phases of"'   fail 'sed "s|>Five phases</a>|>The 6 ph
 case_ 'digit count drifts in README.md'  fail 'printf "The workflow has 6 phases.\n" >> README.md'
 case_ 'hyphenated digit phase claim'     fail 'printf "The 6-phase workflow.\n" >> README.md'
 case_ 'hyphenated digit word claim'      fail 'printf "The 9-evaluative-word table.\n" >> README.md'
+case_ 'title-case digit phase claim'     fail 'printf "The 6 Phases of it.\n" >> README.md'
+case_ 'title-case digit word claim'      fail 'printf "Runs 9 Evaluative Words.\n" >> README.md'
 case_ 'digit word count drifts in prose' fail 'printf "Nine evaluative words? No: 9 evaluative words.\n" >> $SKILL/reference/traps.md'
 case_ 'number word inside another word'  ok   'printf "Each lock is written\nphase by phase.\n" >> README.md'
 case_ 'phase chain wrapped over a line'  ok   'printf "The workflow runs GATE → GROUND →\nRESIDUE → ASK → LOCK.\n" >> README.md'

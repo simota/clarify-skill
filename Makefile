@@ -167,8 +167,8 @@ status:
 # The prose writes both counts in words, so the check maps three..ten rather than pretending prose
 # says `5`. The published page writes them as digits in its fact strip, which the word scan cannot
 # see, so a second scan reads the digits — anchored to the phrases `N phases` and `N evaluative
-# words`, hyphenated (`N-phase`) as well as spaced, exactly as the word scan is, rather than to any
-# markup. Any such phrase counts, even one about something else: a check
+# words`, hyphenated (`N-phase`) as well as spaced and in any case, exactly as the word scan is,
+# rather than to any markup. Any such phrase counts, even one about something else: a check
 # that skips a phrasing can skip a real claim silently, and a false match only asks for a reword. Both
 # scans read every prose file and docs/index.html with its tags stripped, lines joined so a claim
 # wrapped over a line break still counts, and a number word must start a word (`written phase` is
@@ -221,7 +221,7 @@ check:
 	if [ -f "$(SKILL)/SKILL.md" ]; then \
 		p=$$(awk '/^\| Phase \| Focus \|/{t=1;next} t&&/^\| *:?---/{next} t&&/^\|/{c++;next} t{exit} END{print c+0}' "$(SKILL)/SKILL.md"); \
 		pclaimed=$$(printf '%s' "$$claimsrc" | grep -oiE '(^|[^A-Za-z])(three|four|five|six|seven|eight|nine|ten)[- ]phase' | tr 'A-Z' 'a-z' | sed 's/^[^a-z]*//' | cut -d- -f1 | cut -d' ' -f1 | sort -u); \
-		pdigits=$$(printf '%s' "$$claimsrc" | grep -oE '(^|[^0-9A-Za-z.])[0-9]+[- ]phase' | grep -oE '[0-9]+' | sort -u); \
+		pdigits=$$(printf '%s' "$$claimsrc" | grep -oiE '(^|[^0-9A-Za-z.])[0-9]+[- ]phase' | grep -oE '[0-9]+' | sort -u); \
 		if [ -z "$$pclaimed$$pdigits" ]; then \
 			echo "MISS no phase-count claim found — this check has drifted from the prose" >&2; fail=1; \
 		fi; \
@@ -234,7 +234,7 @@ check:
 		done; \
 		w=$$(awk '/^\| Word \| Axis/{t=1;next} t&&/^\| *:?---/{next} t&&/^\|/{c++;next} t{exit} END{print c+0}' "$(SKILL)/SKILL.md"); \
 		wclaimed=$$(printf '%s' "$$claimsrc" | grep -oiE '(^|[^A-Za-z])(three|four|five|six|seven|eight|nine|ten)[- ]evaluative' | tr 'A-Z' 'a-z' | sed 's/^[^a-z]*//' | cut -d- -f1 | cut -d' ' -f1 | sort -u); \
-		wdigits=$$(printf '%s' "$$claimsrc" | grep -oE '(^|[^0-9A-Za-z.])[0-9]+[- ]evaluative' | grep -oE '[0-9]+' | sort -u); \
+		wdigits=$$(printf '%s' "$$claimsrc" | grep -oiE '(^|[^0-9A-Za-z.])[0-9]+[- ]evaluative' | grep -oE '[0-9]+' | sort -u); \
 		if [ -z "$$wclaimed$$wdigits" ]; then \
 			echo "MISS no evaluative-word-count claim found — this check has drifted from the prose" >&2; fail=1; \
 		fi; \
