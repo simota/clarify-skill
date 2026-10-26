@@ -148,10 +148,13 @@ already clear.
 | **Large** (structure, many files, expensive to redo) | **0–1** preference question; required user-only inputs within the round limit | Necessary inputs within the round limit, then explicit approval |
 
 These are maxima, not quotas. Approval is separate from clarification and cannot replace
-selection of a recipient, destructive target or other missing fact. A known essential input
-may use round 2; reaching the cap leaves it unresolved, not defaulted. Delegated small work
-whose gate opened still takes the **short lock** (`reference/lock.md`) and proceeds without
-questions; when delegation alone settles both gate sentences, the gate stays shut instead.
+selection of a recipient, destructive target or other missing fact. A known essential input may
+use round 2; reaching the cap leaves it unresolved, not defaulted. Delegated small reversible
+work whose gate opened, with no user-only input missing, still takes the **short lock**
+(`reference/lock.md`) and proceeds without questions; when delegation alone settles both gate
+sentences, the gate stays shut instead. Delegation does not lift work out of the irreversible
+column: "send it however you like" still resolves the recipient and waits for approval under
+the full block.
 
 ## Translating the Evaluative Word
 

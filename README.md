@@ -148,7 +148,7 @@ identifiers across files as well. Five things have to agree before it exits zero
 | Checked | Fails when |
 |---|---|
 | Every `*.md` path cited in a root `*.md` file or in the skill, in a code span or a Markdown link (`eval/` and `docs/` are not scanned) | a skill file cites something outside `skills/clarify/`, a root file cites something that does not exist, or a path reaches through a parent |
-| Every file in `reference/` | `SKILL.md` never names it |
+| Every file in `reference/`, whatever its extension (dotfiles aside) | `SKILL.md` never names it, or it is a subdirectory — the scans read `reference/*.md` only, so the directory stays flat |
 | The phase count | prose or the published page claims a number the Workflow table does not tabulate |
 | The evaluative-word count | the same, against the translation table |
 | Identifiers | the frontmatter `name` leaves the directory name behind · the phase chain and the Workflow table name different phases · the README or the page prints a different chain · `reference/detect.md` maps a trigger onto a row the translation table no longer defines · the page's copy of the translation table names different rows, or the same rows in another order · the page's grounding table, lock block or one-line short lock differs from `reference/grounding.md` or `reference/lock.md` |
