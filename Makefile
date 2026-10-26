@@ -143,8 +143,9 @@ status:
 	done
 
 # Self-containment is this skill's whole premise: every path it cites must resolve inside
-# `skills/$(NAME)/`, every file in reference/ must be named by SKILL.md, and no cited path may
-# reach through a parent. Two counts are checked on top of that, because both are load-bearing and
+# `skills/$(NAME)/`, every file in reference/ must be named by SKILL.md (dotfiles aside; a
+# subdirectory is refused, since every scan below would skip it), and no cited path may reach
+# through a parent. Two counts are checked on top of that, because both are load-bearing and
 # both are the kind of number prose keeps after the table it describes has moved on:
 #
 # Counts are only half of it. A rename keeps every count intact while leaving the other file
@@ -195,7 +196,7 @@ check:
 	fail=0; \
 	misses=$$( \
 		for f in $(DOCS); do \
-			grep -ohE '`[A-Za-z][A-Za-z0-9._/-]*\.md`' "$$f" | tr -d '`' | sort -u | while read -r ref; do \
+			grep -ohE '`(\./)?[A-Za-z][A-Za-z0-9._/-]*\.md`' "$$f" | tr -d '`' | sed 's|^\./||' | sort -u | while read -r ref; do \
 				hit=; for r in "$(SKILL)" "$(SKILL)/reference" "$(REPO)"; do \
 					[ "$${f#skills/}" != "$$f" ] && [ "$$r" = "$(REPO)" ] && continue; \
 					[ -f "$$r/$$ref" ] && hit=1; \
@@ -207,10 +208,11 @@ check:
 			done; \
 		done); \
 	if [ -n "$$misses" ]; then echo "$$misses" >&2; fail=1; fi; \
-	for f in "$(SKILL)"/reference/*.md; do \
+	for f in "$(SKILL)"/reference/*; do \
 		[ -e "$$f" ] || continue; \
 		b=$$(basename "$$f"); \
-		grep -q "reference/$$b" "$(SKILL)/SKILL.md" || { echo "MISS reference/$$b exists but SKILL.md never names it" >&2; fail=1; }; \
+		if [ -d "$$f" ]; then echo "MISS reference/$$b is a directory — the scans read reference/*.md only, so reference/ stays flat" >&2; fail=1; continue; fi; \
+		grep -qF "reference/$$b" "$(SKILL)/SKILL.md" || { echo "MISS reference/$$b exists but SKILL.md never names it" >&2; fail=1; }; \
 	done; \
 	if { grep -noE '`[^`]*`' $(DOCS); grep -noE '][(][^)]*[)]' $(DOCS); } | grep -v '://' | grep -E '\.\./' >&2; then \
 		echo "MISS a cited path reaches through a parent directory" >&2; fail=1; \

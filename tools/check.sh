@@ -76,6 +76,8 @@ case_ 'missing ref, capitalised name'    fail 'printf "See \`NOTREAL.md\`.\n" >>
 case_ 'missing ref, new root .md'        fail 'printf "See \`nonexistent-file.md\`.\n" > CONTRIBUTING.md'
 case_ 'missing ref with a folder'        fail 'printf "See \`skills/clarify/reference/gone.md\`.\n" >> README.md'
 case_ 'missing ref under eval/'          fail 'printf "See \`eval/nope.md\`.\n" >> README.md'
+case_ 'missing ref spelled with ./'      fail 'printf "See \`./reference/gone.md\`.\n" >> $SKILL/SKILL.md'
+case_ 'ref spelled with ./ that resolves' ok  'printf "See \`./reference/lock.md\`.\n" >> $SKILL/SKILL.md'
 case_ 'skill cites a repo-only path'     fail 'printf "See \`eval/README.md\`.\n" >> $SKILL/SKILL.md'
 case_ 'markdown link to a missing file'  fail 'printf "See [gone](reference/gone.md).\n" >> $SKILL/SKILL.md'
 case_ 'link example in a code fence'     ok   'printf "\n\`\`\`markdown\nSee [the notes](NOTES.md).\n\`\`\`\n" >> README.md'
@@ -98,6 +100,12 @@ case_ 'detect.md deleted, foreign cwd'   fail 'rm $SKILL/reference/detect.md' fo
 case_ 'orphan file in reference/'        fail 'printf "# Orphan\n" > $SKILL/reference/orphan.md'
 case_ 'orphan named by SKILL.md only'    ok   'printf "# Orphan\n" > $SKILL/reference/orphan.md
                                               printf "See \`reference/orphan.md\`.\n" >> $SKILL/SKILL.md'
+case_ 'orphan non-.md file in reference/' fail 'printf "{}\n" > $SKILL/reference/example.json'
+case_ 'non-.md file named by SKILL.md'   ok   'printf "{}\n" > $SKILL/reference/example.json
+                                              printf "See \`reference/example.json\`.\n" >> $SKILL/SKILL.md'
+# The scans glob reference/*.md, so a subdirectory would be read by none of them: refuse it.
+case_ 'subdirectory under reference/'    fail 'mkdir $SKILL/reference/sub && printf "See \`gone.md\`.\n" > $SKILL/reference/sub/x.md'
+case_ 'a dotfile in reference/ is not ours' ok 'printf "x\n" > $SKILL/reference/.DS_Store'
 
 # --- something points at a parent --------------------------------------------
 case_ 'parent ref in SKILL.md'           fail 'printf "See \`../escape.md\`.\n" >> $SKILL/SKILL.md'
