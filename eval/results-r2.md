@@ -15,7 +15,7 @@ under the stated interpretation; it is not a measured success rate.
 |---|---|---|---|---|---|
 | C045 | このメールをうちらしくして | closed / 0 | closed / 0 | still-ambiguous | Untouched by design. The oracle asks about an exception; reading the current guide as binding gives formal with zero questions. An oracle dispute, not a rule defect. |
 | C099 | make it nice | open / 1 | closed / 0 | fixed | P6: design-direction already owns the direction dialogue → hand off once, ask nothing here. Runtime selection by the CLI is still not observed. |
-| C100 | clean this up | open / 1 | closed / 0 | fixed | P6: coding-refactor sizes the scope itself → hand off, no second lock. |
+| C100 | clean this up | open / 1 | closed / 0 | fixed | P6: the refactoring owner sizes the scope itself → hand off, no second lock. |
 | C101 | do it properly | open / 1 | closed / 0 | fixed | P6: quality-review owns the check against existing tests and conventions. |
 | C102 | not quite it | open / 1 | closed / 0 | fixed | P6: design-review owns the diagnosis → Clarify does not diagnose first. |
 | C103 | refactor this | unknown / — | unknown / — | still-ambiguous | Owner contract not provided. P6 now says to state that the contract could not be read rather than guess, but the best route still has no gold label. |

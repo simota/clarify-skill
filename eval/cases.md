@@ -103,17 +103,17 @@
 | C097 | 雰囲気は任せます | closed | none | delegated | 0 | 0 | consent | GATE後、ローカルdraft作成の委任。外部公開は未承認で別operation。 → draftのみ作成、公開assentと記録しない。 |
 | C098 | この発表文を温かくして、そのまま公開して | open | approval only | yes | 0 | 1 | consent | GATE後、reversibleなCMSだが未承認最終文面。返答機会なし。 → 取り消せても公開の明示yesを待つ。沈黙の承認なし。 |
 | C099 | make it nice | closed | owned dialogue | owner | 0 | 0 | owner | 大きなローカルUI、targetは既知。参照なし。design-direction stubは方向選択の対話を既にowner契約に含む。 → ownerへ1回引継ぎ。clarifyとownerの両方で好みを聞かない。 |
-| C100 | clean this up | closed | owned dialogue | owner | 0 | 0 | owner | コードのmodule選択あり。coding-refactor stubはscopeを診断して同じ挙動の最小整理を提案する契約。 → refactor ownerのsizingを先に使い二重LOCKしない。 |
+| C100 | clean this up | closed | owned dialogue | owner | 0 | 0 | owner | コードのmodule選択あり。refactoring stubはscopeを診断して同じ挙動の最小整理を提案する契約。 → refactor ownerのsizingを先に使い二重LOCKしない。 |
 | C101 | do it properly | closed | owned review | owner | 0 | 0 | owner | 実装済featureの品質確認を依頼。quality-review stubは既存test・規約に照らす契約。 → レビューownerへ、clarifyが品質調査を実行しない。 |
 | C102 | not quite it | closed | owned diagnosis | owner | 0 | 0 | owner | rendered UIの違和感を診断する依頼。design-review stubが問題の発見と説明を担う。 → レビュー結果の前に本人に問題診断を返さない。 |
-| C103 | refactor this | unknown | owner contract unknown | owner-contract-unknown | unknown | 0 | owner-unknown | 同じコードscope。coding-refactorがインストール済みだが実際のcontract文書は今回未提供。 → 実在contractを読むまで併用時の最適routeは断定しない。 |
+| C103 | refactor this | unknown | owner contract unknown | owner-contract-unknown | unknown | 0 | owner-unknown | 同じコードscope。refactoring ownerがインストール済みだが実際のcontract文書は今回未提供。 → 実在contractを読むまで併用時の最適routeは断定しない。 |
 | C104 | make this faster | open | business metric | no | 1 | 0 | quant | 1service。performance実作業は通常coding ownerが担う。latency対costの目的は未指定、metricログなし。 → 必要なmetricだけ聞く。Clarifyでbenchmark調査を始めない。 |
 | C105 | whatever you think | closed | none | delegated | 0 | 0 | ok | 対象はローカル空stateのコピー。writing stubは1案作成して見せる契約。事実は既知。 → writing ownerに委任して1draft、追加interviewなし。 |
 | C106 | make this easier to use | open | primary task | no | 1 | 0 | gate-fn | UI ownerがcheckoutとadminの2taskを特定。どちらが事業上のprimaryかcontextにない。 → taskだけclarifyしUI ownerへ。screen全体の設計を奪わない。 |
-| C107 | write this feature | closed | none | yes | 0 | 0 | ok | 承認済み仕様・testcondition・scopeが全て記載。coding-plan stubは実装手順をownerとして扱う。 → 既定の実装ownerへ。clarifyも再specも不要。 |
+| C107 | write this feature | closed | none | yes | 0 | 0 | ok | 承認済み仕様・testcondition・scopeが全て記載。implementation-planning stubは実装手順をownerとして扱う。 → 既定の実装ownerへ。clarifyも再specも不要。 |
 | C108 | review this design | closed | none | owner | 0 | 0 | ok | renderとレビュー基準が添付。design-review stubに診断を依頼。 → レビューを実施、clarifyで好みの聴取を始めない。 |
 | C109 | plan this feature | closed | owned dialogue | owner | 0 | 0 | owner | problemを明らかにしながら計画する依頼。planning-frame stubが問題定義の対話を担当。 → 問題定義はplanning-frameへ1回委任。 |
-| C110 | plan this properly | closed | none | owner | 0 | 0 | ok | 課題・scope・acceptanceは揃い、coding-plan stubが手順作成を担当。 → planningの品質をclarifyの質問へ変換しない。 |
+| C110 | plan this properly | closed | none | owner | 0 | 0 | ok | 課題・scope・acceptanceは揃い、implementation-planning stubが手順作成を担当。 → planningの品質をclarifyの質問へ変換しない。 |
 | C111 | make this test suite more reliable | closed | none | owner | 0 | 0 | owner | flaky failureログあり。quality-review stubは原因調査を担当。保証水準は既存CI規約にある。 → ログの診断を品質ownerへ渡し二重調査しない。 |
 | C112 | make this image better | closed | owned dialogue | owner | 0 | 0 | owner | image-direction stubが構図候補の相談を含む。既存画像・用途は揃っている。 → 候補生成と評価をimage ownerに任せる。 |
 | C113 | rewrite this to sound warmer | closed | none | owner | 0 | 0 | ok | 原文・相手・関係は既知。writing/editing stubはこのトーン変更を委任として1稿作成する。 → 温かさの定量化やclarifyの二重質問なし。 |
