@@ -1,6 +1,6 @@
 ---
 name: clarify
-description: "Turns a vague or subjective request into one agreed instruction: the intent in the requester's words plus a checkable done-condition, asking only what context cannot answer. Use whenever an ask has no achievement condition: 'make it nice', 'clean this up', 'do it properly', an unbounded 'refactor this', 'not quite it', いい感じに, ちゃんとやって, なんか違う. Skip if intent and done-check are stated, or another skill owns the dialogue."
+description: "Turns a subjective request into one agreed instruction: the intent in the requester's words plus a checkable done-condition, asking only what context can't answer. Use when an ask lacks one: 'make it nice', 'clean this up', 'do it properly', unbounded 'refactor this', 'not quite it', いい感じに, ちゃんとやって, なんか違う. Skip if intent and done-check are given, or another skill owns the dialogue."
 ---
 
 <!--
