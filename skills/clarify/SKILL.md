@@ -1,6 +1,6 @@
 ---
 name: clarify
-description: "Turning a subjective request into an instruction both sides would agree to: the intent in the requester's own words plus a done-condition somebody else could check. Grounds the evaluative word from context first, asks only the residue that would change the deliverable, and locks the result. Use when the ask is 'make it nice', 'clean this up', 'do it properly', or 'that's not quite it'. Don't use for a request that already states its intent and how it will be judged, or when an installed skill that owns the task runs its own clarifying dialogue."
+description: "Turns a vague or subjective request into one agreed instruction: the intent in the requester's words plus a checkable done-condition, asking only what context cannot answer. Use whenever an ask has no achievement condition: 'make it nice', 'clean this up', 'do it properly', an unbounded 'refactor this', 'not quite it', いい感じに, ちゃんとやって, なんか違う. Skip if intent and done-check are stated, or another skill owns the dialogue."
 ---
 
 <!--
